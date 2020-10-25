@@ -55,6 +55,7 @@
 </tr>
 </table>
 <button onclick="ValidarEntrada()">Ingresar automata </button>
+<button onclick="optimizar()">Simplificar automata </button>
 
 
 
@@ -107,8 +108,50 @@ function ValidarEntrada()
     console.log(Alfabeto)
     console.log(Gama)
     console.log(E_Finales)
-    console.log(tabla_estados(ConjuntoQ,Alfabeto,Gama))
+    console.log(tabla_estados(ConjuntoQ,Alfabeto,Gama)) 
     graph()
+    console.log(matriz_distinguible(tabla_estados(ConjuntoQ,Alfabeto,Gama)))
+}
+
+function optimizar()
+{
+  do
+  {
+    var matriz_d=matriz_distinguible(tabla_estados(ConjuntoQ,Alfabeto,Gama))
+    var id_d=buscar_disti(matriz_d)
+
+    console.log(matriz_d)
+    console.log(id_d)
+
+    for(let index=0;index<Gama.length;index++)
+    {
+      if(Gama[index][0]==ConjuntoQ[id_d[1]])
+      {
+        Gama.splice(index,1)
+        index=0
+        console.log("Q")
+      }
+      if(Gama[index][2]==ConjuntoQ[id_d[1]])
+      {
+        var aux=[]
+        aux.push(Gama[index][0])
+        aux.push(Gama[index][1])
+        aux.push(ConjuntoQ[id_d[0]])
+
+        Gama.splice(index,1,aux)
+
+        console.log("G")
+      }
+    }
+  ConjuntoQ.splice(id_d[1],1)
+  
+  console.log(ConjuntoQ)
+  console.log(Alfabeto)
+  console.log(Gama)
+  
+  }while(equivalencias(matriz_d))
+  
+  graph()
 
 }
 
@@ -205,6 +248,150 @@ function tabla_estados(estados,alfabeto,Ftrans)
   }
   return matriz
 }
+
+// Funciones para simplificar afd
+
+/* function Compatibles() */
+
+function factorial(numero)
+{
+  var resultado=1
+  while(numero>0)
+  {
+    resultado*=numero
+    numero--
+  }
+  return resultado
+}
+
+function coef_binomial(numero)
+{
+  var resultado=factorial(numero)/(factorial(2)*factorial(numero-2))
+  return resultado
+}
+
+function matrizvacia(arreglo)
+{
+  var matriz=[]
+  for(let index=0;index<=arreglo.length;index++)
+  {
+    var columnas=[]
+    for(let jdex=0;jdex<=arreglo.length;jdex++)
+    {
+      if(index == 0 && jdex == 0)
+        columnas.push('n')
+      else
+      {
+        if(index == 0)
+          columnas.push(arreglo[jdex-1])
+        if(jdex == 0)
+          columnas.push(arreglo[index-1])
+         
+      }
+      if(index != 0 && jdex != 0)
+      { 
+        if(index==jdex)
+          columnas.push(-1)
+        else
+          columnas.push(0)
+      }
+    }
+    matriz.push(columnas)
+  }
+  return matriz
+}
+
+function matriz_distinguible(matriz)
+{
+  var matriz_resultado=matrizvacia(ConjuntoQ)
+  var id_i=1,id_f=ConjuntoQ.length,iteracion=0
+
+  while(iteracion<coef_binomial(ConjuntoQ.length))
+  {
+    
+    
+    while(id_i!=id_f)
+    {
+      var aux=1
+      /* if(final_nofinal(matriz[id_i][0])!=final_nofinal(matriz[id_f][0]))
+      {
+        matriz_resultado[id_i][id_f]=1
+        matriz_resultado[id_f][id_i]=1
+      } */
+      while(aux<=Alfabeto.length)
+      {
+        if(final_nofinal(matriz[id_i][aux])!=final_nofinal(matriz[id_f][aux]))
+        {
+          matriz_resultado[id_i][id_f]=1
+          matriz_resultado[id_f][id_i]=1
+        }
+        aux++
+      }
+      id_f--
+      iteracion++
+
+    }
+    id_i++
+    id_f=ConjuntoQ.length
+  }
+
+  return matriz_resultado
+}
+
+function final_nofinal(id)
+{
+  if(E_Finales.includes(id))  // true = final
+    return true
+  else                      //false = nofinal
+    return false
+}
+
+function buscar_disti(matriz)
+{
+  var ids=[]
+  for(let index=1;index<matriz.length;index++)
+    for(let jdex=1;jdex<matriz.length;jdex++)
+      if(matriz[index][jdex]==0)
+      {
+        matriz[index][jdex]=1
+        matriz[jdex][index]=1
+        ids.push(index-1)
+        ids.push(jdex-1)
+        return ids
+      }
+}
+
+function equivalencias(matriz)
+{
+  var ids=[]
+  for(let index=1;index<matriz.length;index++)
+    for(let jdex=1;jdex<matriz.length;jdex++)
+      if(matriz[index][jdex]==0)
+        return true
+  return false
+}
+                          //ConjuntoQ,Gama
+/* function simplificar(matriz,arreglo1,arreglo2)
+{
+  var matriz_d=matriz_distinguible(matriz,arreglo1,arreglo2)
+  var id_d=buscar_disti(matriz_d)
+  
+  for(let index=0;index<arreglo2.length;index++)
+  {
+    if(arreglo2[index][0]==arreglo1[id_d[1]])
+      arreglo2.splice(index,1)
+    if(arreglo2[index][2]==arreglo1[id_d[1]])
+    {
+      var aux=[]
+      aux.push(arreglo2[index][0])
+      aux.push(arreglo2[index][1])
+      aux.push(arreglo1[id_d[1]])
+
+      arreglo2.splice(index,1,aux)
+    }
+  }
+  arreglo1.splice(id_d[1],1)
+} */
 
 </script>
 </body>
