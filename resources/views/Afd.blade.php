@@ -370,6 +370,31 @@ function equivalencias(matriz)
         return true
   return false
 }
+
+function EsAfd(arreglo)
+{
+  for(let index=0;index<arreglo.length;index++)
+    for(let jdex=0;jdex<arreglo.length;jdex++)
+    {
+      if(index!=jdex)
+      {
+        if(arreglo[index][0]==arreglo[jdex][0] && arreglo[index][1]==arreglo[jdex][1] && arreglo[index][2]!=arreglo[jdex][2])
+          return false  //false = no es afd, ya que no cumple con la condicion de unicidad de f.trans
+      }
+    }
+  return true       //true = es afd
+}
+                  //estados - estados finales
+function Complemento(arreglo1,arreglo2)
+{
+  for(let index=0;index<arreglo1.length;index++)
+  {
+    if(!arreglo2.includes(arreglo1[index]))
+      arreglo2.push(arreglo1[index])
+    else
+      arreglo2.splice(arreglo1.indexOf(arreglo1[index])-1,1)
+  }
+}
                           //ConjuntoQ,Gama
 /* function simplificar(matriz,arreglo1,arreglo2)
 {
