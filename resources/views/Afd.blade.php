@@ -33,7 +33,7 @@
 
 <!-- Ingreso de datos automata n°1 visual -->
 <table border="0">  
-<caption>Automata N°1</caption>
+<caption>Datos Automatas</caption>
 <tr>
 <td width="25%">Conjunto de estados Q:</td>
 <td width="70%"><input type="text" name="conjuntoQ" placeholder="q1,q2,q3,...,qn" id="Q" > Formato: estado1,estado2,estado3, </td><br>
@@ -54,7 +54,8 @@
 <td width="70%"><input type="text" name="Finales" placeholder="q1,q2,q3,q4,..." id="Finales" > Formato: estado,estado </td><br>
 </tr>
 </table>
-<button onclick="ValidarEntrada()">Ingresar automata </button>
+<button onclick="ValidarEntrada1()">Ingresar automata 1</button>
+<button onclick="ValidarEntrada2()">Ingresar automata 2</button>
 <button onclick="optimizar()">Simplificar automata </button>
 
 
@@ -64,16 +65,22 @@
 
 <script type="text/javascript">
 
-var E_inicial
-var ConjuntoQ=[]
-var Alfabeto=[]
-var Gama=[]
-var E_Finales=[]
+var E_inicial1,E_inicial2
+
+var ConjuntoQ1=[],ConjuntoQ2=[],ConjuntoQ3=[]
+
+var Alfabeto1=[],Alfabeto2=[],Alfabeto3=[]
+
+var Gama1=[],Gama2=[],Gama3=[]
+
+var E_Finales1=[],E_Finales2=[],E_Finales3=[]
+
 var node,edge,data,container,options,network
 
-function ValidarEntrada()
+
+function ValidarEntrada1()
 {
-    E_inicial=document.getElementById("Inicial").value
+    E_inicial1=document.getElementById("Inicial").value
     var Q=document.getElementById("Q").value
     var A=document.getElementById("Alfabeto").value
     var G=document.getElementById("Gama").value
@@ -82,7 +89,7 @@ function ValidarEntrada()
     let val=/^([a-zA-Z|0-9]+[,]?)+[a-zA-Z0-9]/g
     let valg=/^(([a-zA-Z0-9]+[,]?)+[;]?)+[a-zA-Z0-9]/g
 
-    if(Q.length == 0 || A.length == 0 || G.length == 0 || E_inicial.length == 0 || F.length == 0)
+    if(Q.length == 0 || A.length == 0 || G.length == 0 || E_inicial1.length == 0 || F.length == 0)
         alert("Hay campos en blanco")
     else
     {
@@ -97,61 +104,190 @@ function ValidarEntrada()
         else
         alert("Formato ingresado no valido") */
         
-        ConjuntoQ=Datos_dupli(Q.split(','))
-        ConjuntoQ.splice(0,0,E_inicial)
-        ConjuntoQ=Datos_dupli(ConjuntoQ)
-        Alfabeto=Datos_dupli(A.split(','))
-        E_Finales=Datos_dupli(F.split(','))
-        Gama=_Gama(Datos_dupli(G.split(';')))
+        ConjuntoQ1=Datos_dupli(Q.split(','))
+        ConjuntoQ1.splice(0,0,E_inicial1)
+        ConjuntoQ1=Datos_dupli(ConjuntoQ1)
+        ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
+        
+        Alfabeto1=Datos_dupli(A.split(','))
+
+        E_Finales1=Datos_dupli(F.split(','))
+        E_Finales1=cambiarcaracter(E_Finales2,E_Finales1)
+
+        Gama1=_Gama(Datos_dupli(G.split(';')))
+        Gama1=cambiarcaractergama(Gama2,Gama1)
     }
-    console.log(ConjuntoQ)
-    console.log(Alfabeto)
-    console.log(Gama)
-    console.log(E_Finales)
-    console.log(tabla_estados(ConjuntoQ,Alfabeto,Gama)) 
+  
+    ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+    Gama3=copiararray(Gama1,Gama2)
+    Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+    E_Finales3=copiararray(E_Finales1,E_Finales2) 
+
+    //console.log(tabla_estados(ConjuntoQ,Alfabeto,Gama)) 
     graph()
-    console.log(matriz_distinguible(tabla_estados(ConjuntoQ,Alfabeto,Gama)))
+    //console.log(matriz_distinguible(tabla_estados(ConjuntoQ,Alfabeto,Gama)))
+}
+
+function ValidarEntrada2()
+{
+    E_inicial2=document.getElementById("Inicial").value
+    var Q=document.getElementById("Q").value
+    var A=document.getElementById("Alfabeto").value
+    var G=document.getElementById("Gama").value
+    var F=document.getElementById("Finales").value
+
+    let val=/^([a-zA-Z|0-9]+[,]?)+[a-zA-Z0-9]/g
+    let valg=/^(([a-zA-Z0-9]+[,]?)+[;]?)+[a-zA-Z0-9]/g
+
+    if(Q.length == 0 || A.length == 0 || G.length == 0 || E_inicial2.length == 0 || F.length == 0)
+        alert("Hay campos en blanco")
+    else
+    {
+       /*  if(val.test(Q) && val.test(A) && valg.test(G))
+        {
+             Local_ConjuntoQ=Q.split(',')
+            Local_Alfabeto=A.split(',')
+            var preasig=G.split(';')
+            for(let index=0;index<preasig.length;index++)
+                Local_Gama.push(preasig[index].split(',')) 
+        }
+        else
+        alert("Formato ingresado no valido") */
+        
+        ConjuntoQ2=Datos_dupli(Q.split(','))
+        ConjuntoQ2.splice(0,0,E_inicial2)
+        ConjuntoQ2=Datos_dupli(ConjuntoQ2)
+        ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
+        
+        Alfabeto2=Datos_dupli(A.split(','))
+
+        E_Finales2=Datos_dupli(F.split(','))
+        E_Finales2=cambiarcaracter(E_Finales1,E_Finales2)
+
+        Gama2=_Gama(Datos_dupli(G.split(';')))
+        Gama2=cambiarcaractergama(Gama1,Gama2)
+    }  
+
+    ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+    Gama3=copiararray(Gama1,Gama2)
+    Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+    E_Finales3=copiararray(E_Finales1,E_Finales2)
+
+    //console.log(tabla_estados(ConjuntoQ,Alfabeto,Gama)) 
+    graph()
+    //console.log(matriz_distinguible(tabla_estados(ConjuntoQ2,Alfabeto2,Gama2)))
+}
+
+function copiararray(datos1,datos2)
+{
+  var resultado=[]
+  for(let index=0;index<(datos1.length+datos2.length);index++)
+  {
+    if(index<datos1.length)
+      resultado.push(datos1[index])
+    else
+      resultado.push(datos2[index-datos1.length])
+  }
+  return resultado
+}
+
+function cambiarcaracter(dato1,dato2)
+{
+  for(let j=0;j<dato1.length;j++)
+    for(let x=0;x<dato2.length;x++)
+    {
+  	  dato2[x]=compararletra(dato1[j],dato2[x])
+    }
+  return dato2
+}
+
+function cambiarcaractergama(g1,g2)
+{
+  for(let i=0;i<g1.length;i++)
+    for(let j=0;j<g2.length;j++)
+    {
+      if(g1[i][0]==g2[j][0] && g1[i][2]==g2[j][2])
+  	  {
+        g2[i][0]=compararletra(g1[i][0],g2[j][0])
+        g2[i][2]=compararletra(g1[i][2],g2[j][2])
+      }  
+    }
+  return g2
+}
+
+function compararletra(palabra1,palabra2)
+{
+	if(caractervalido(palabra1[0]) && caractervalido(palabra2[0]))
+  {
+  	if(palabra1[0]==palabra2[0])
+    {
+    	if(palabra2[0].charCodeAt()==57 || palabra2[0].charCodeAt()==90 || palabra2[0].charCodeAt()==122)
+      	palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-1))
+      else
+      	palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()+1))
+    }
+    return palabra2
+  }
+  
+}
+
+function caractervalido(palabra)
+{
+	for(let i=0;i<palabra.length;i++)
+  {
+  	if((palabra[i].charCodeAt()<48 && palabra[i].charCodeAt()>57) || (palabra[i].charCodeAt()<65 && palabra[i].charCodeAt()>90) || (palabra[i].charCodeAt()<97 && palabra[i].charCodeAt()>122))
+    	return false
+  }
+  return true
 }
 
 function optimizar()
 {
-  do
+  var matriz_d=matriz_distinguible(tabla_estados(ConjuntoQ,Alfabeto,Gama))
+  if(equivalencias(matriz_d))
   {
-    var matriz_d=matriz_distinguible(tabla_estados(ConjuntoQ,Alfabeto,Gama))
-    var id_d=buscar_disti(matriz_d)
-
-    console.log(matriz_d)
-    console.log(id_d)
-
-    for(let index=0;index<Gama.length;index++)
+    while(equivalencias(matriz_d))
     {
-      if(Gama[index][0]==ConjuntoQ[id_d[1]])
-      {
-        Gama.splice(index,1)
-        index=0
-        console.log("Q")
-      }
-      if(Gama[index][2]==ConjuntoQ[id_d[1]])
-      {
-        var aux=[]
-        aux.push(Gama[index][0])
-        aux.push(Gama[index][1])
-        aux.push(ConjuntoQ[id_d[0]])
+      var id_d=buscar_disti(matriz_d)
 
-        Gama.splice(index,1,aux)
+      console.log(matriz_distinguible(tabla_estados(ConjuntoQ,Alfabeto,Gama)))
+      console.log(id_d)
 
-        console.log("G")
+      for(let index=0;index<Gama.length;index++)
+      {
+        if(Gama[index][0]==ConjuntoQ[Buscar_id(ConjuntoQ,id_d[1])-1])
+        {
+          Gama.splice(index,1)
+          index=0
+          console.log("Q")
+        }
+        if(Gama[index][2]==ConjuntoQ[Buscar_id(ConjuntoQ,id_d[1])-1])
+        {
+          var aux=[]
+          aux.push(Gama[index][0])
+          aux.push(Gama[index][1])
+          aux.push(ConjuntoQ[Buscar_id(ConjuntoQ,id_d[0])-1])
+
+          Gama.splice(index,1,aux)
+          index=0
+
+          console.log("G")
+        }
       }
+    ConjuntoQ.splice(Buscar_id(ConjuntoQ,id_d[1])-1,1)
+  
+    console.log(ConjuntoQ)
+    console.log(Alfabeto)
+    console.log(Gama)
+  
     }
-  ConjuntoQ.splice(id_d[1],1)
+    graph()
+  }
+  else
+    alert("El automata ya se encuentra en su estado minimo")
+
   
-  console.log(ConjuntoQ)
-  console.log(Alfabeto)
-  console.log(Gama)
   
-  }while(equivalencias(matriz_d))
-  
-  graph()
 
 }
 
@@ -171,7 +307,7 @@ function visestado(arreglo)
 function alfabetoxestado(arreglo)
 {
   var object=[]
-  arreglo.forEach(element => {object.push({from: Buscar_id(ConjuntoQ,element[0]), to: Buscar_id(ConjuntoQ,element[2]), label: element[1]})})
+  arreglo.forEach(element => {object.push({from: Buscar_id(ConjuntoQ3,element[0]), to: Buscar_id(ConjuntoQ3,element[2]), label: element[1]})})
   return object
 }
 
@@ -207,14 +343,41 @@ function Datos_dupli(arreglo)
   return arreglo
 }
 
+function gama_dupli(arreglo)
+{
+  for(let index=0;index<arreglo.length;index++)
+	  for(let jdex=0;jdex<arreglo.length;jdex++)
+	  {
+      if(index!=jdex)
+      {
+        if(Comparar(arreglo[index],arreglo[jdex]))
+        {  
+          arreglo.splice(jdex,1)
+          jdex=0
+        }
+      }
+	  }
+}
+
+function Comparar(arr1,arr2)
+{
+  for(let z=0;z<arr1.length;z++)
+  {
+    if(arr1[z]==arr2[z])
+      return true
+  }
+  return false
+}
+
 function graph()
 {
-  node=new vis.DataSet(visestado(ConjuntoQ))
-  edge=new vis.DataSet(alfabetoxestado(Gama))
-  container= document.getElementById('mynetwork')
-  data={nodes: node, edges: edge}
-  options={edges:{arrows:{to:{enabled:true}}}}
-  network= new vis.Network(container, data, options)
+    node=new vis.DataSet(visestado(ConjuntoQ3))
+    edge=new vis.DataSet(alfabetoxestado(Gama3))
+    container= document.getElementById('mynetwork')
+    data={nodes: node, edges: edge}
+    options={edges:{arrows:{to:{enabled:true}}}}
+    network= new vis.Network(container, data, options)
+
 }
  
  //Fin funciones visualizacion y creacion de automata
@@ -308,33 +471,32 @@ function matriz_distinguible(matriz)
 
   while(iteracion<coef_binomial(ConjuntoQ.length))
   {
-    
-    
     while(id_i!=id_f)
     {
-      var aux=1
-      /* if(final_nofinal(matriz[id_i][0])!=final_nofinal(matriz[id_f][0]))
+      if(final_nofinal(matriz[id_i][0])!=final_nofinal(matriz[id_f][0]))
       {
         matriz_resultado[id_i][id_f]=1
         matriz_resultado[id_f][id_i]=1
-      } */
-      while(aux<=Alfabeto.length)
+      } 
+      else
       {
-        if(final_nofinal(matriz[id_i][aux])!=final_nofinal(matriz[id_f][aux]))
+        var aux=1
+        while(aux<=Alfabeto.length)
         {
-          matriz_resultado[id_i][id_f]=1
-          matriz_resultado[id_f][id_i]=1
+          if(final_nofinal(matriz[id_i][aux])!=final_nofinal(matriz[id_f][aux]))
+          {
+            matriz_resultado[id_i][id_f]=1
+            matriz_resultado[id_f][id_i]=1
+          }
+          aux++
         }
-        aux++
       }
       id_f--
       iteracion++
-
     }
     id_i++
     id_f=ConjuntoQ.length
   }
-
   return matriz_resultado
 }
 
@@ -355,8 +517,8 @@ function buscar_disti(matriz)
       {
         matriz[index][jdex]=1
         matriz[jdex][index]=1
-        ids.push(index-1)
-        ids.push(jdex-1)
+        ids.push(matriz[0][index])
+        ids.push(matriz[jdex][0])
         return ids
       }
 }
