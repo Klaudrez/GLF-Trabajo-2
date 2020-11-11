@@ -91,118 +91,175 @@ var node,edge,data,container,options,network
 function ValidarEntrada1()
 {
     limpiar()
+
+    if(ConjuntoQ1.length>0)
+      ResetearAutomata(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1)
+
     E_inicial1=document.getElementById("Inicial").value
     var Q=document.getElementById("Q").value
     var A=document.getElementById("Alfabeto").value
     var G=document.getElementById("Gama").value
     var F=document.getElementById("Finales").value
 
-    let val=/^([a-zA-Z|0-9]+[,]?)+[a-zA-Z0-9]/g
-    let valg=/^(([a-zA-Z0-9]+[,]?)+[;]?)+[a-zA-Z0-9]/g
+    let valQ=/^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$/g
+    let valA=/^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$/g
+    let valF=/^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$/g
+    let valG=/^[a-zA-Z0-9]+,(@|[a-zA-Z0-9]+),[a-zA-Z0-9]+(;[a-zA-Z0-9]+,(@|[a-zA-Z0-9]+),[a-zA-Z0-9]+)*$/g
 
     if(Q.length == 0 || A.length == 0 || G.length == 0 || E_inicial1.length == 0 || F.length == 0)
         alert("Hay campos en blanco")
     else
     {
-       /*  if(val.test(Q) && val.test(A) && valg.test(G))
+        if(valQ.test(Q) && valA.test(A) && valG.test(G) && valF.test(F) && caractervalido(E_inicial1))
         {
-             Local_ConjuntoQ=Q.split(',')
-            Local_Alfabeto=A.split(',')
-            var preasig=G.split(';')
-            for(let index=0;index<preasig.length;index++)
-                Local_Gama.push(preasig[index].split(',')) 
+          E_inicial1=comparar_eini(E_inicial1,E_inicial2) 
+          ConjuntoQ1=Datos_dupli(Q.split(','))
+          if(validar_estadosx(ConjuntoQ1,E_inicial1))
+          {  
+            ConjuntoQ1.splice(0,0,E_inicial1)
+            ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
+            ConjuntoQ1=Datos_dupli(ConjuntoQ1)
+        
+            Alfabeto1=Datos_dupli(A.split(','))
+
+            E_Finales1=Datos_dupli(F.split(','))
+            E_Finales1=cambiarcaracter(E_Finales2,E_Finales1)
+
+            Gama1=_Gama(Datos_dupli(G.split(';')))
+            Gama1=cambiarcaractergama(ConjuntoQ2,Gama1)
+            Gama1=epsilon(Gama1)  
+           
+            if(validar_estadosx(ConjuntoQ1,E_Finales1) && validar_gama(ConjuntoQ1,Alfabeto1,Gama1))
+            {
+              ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+              Gama3=copiararray(Gama1,Gama2)
+              Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+              E_Finales3=copiararray(E_Finales1,E_Finales2) 
+              console.log("Estados A1: ",ConjuntoQ1)
+              console.log("Alfabeto A1: ",Alfabeto1)
+              console.log("Transiciones A1: ",Gama1)
+              console.log("Estados finales A1: ",E_Finales1)
+              console.log("Estado inicial A1: ",E_inicial1)
+
+              console.log("Tabla de estados A1: ",tabla_estados(ConjuntoQ1,Alfabeto1,Gama1)) 
+              graph()
+            }
+            else
+              alert("Lo datos ingresados no validos, deben estar contenidos en el alfabeto o en los estados")
+          }
+          else
+            alert("Lo datos ingresados no validos, el estado inicial debe estar contenido en el conjunto de estados")
         }
         else
-        alert("Formato ingresado no valido") */
-        
-        E_inicial1=comparar_eini(E_inicial1,E_inicial2) 
-        console.log(E_inicial1)
-        ConjuntoQ1=Datos_dupli(Q.split(','))
-        ConjuntoQ1.splice(0,0,E_inicial1)
-        ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
-        ConjuntoQ1=Datos_dupli(ConjuntoQ1)
-        
-        Alfabeto1=Datos_dupli(A.split(','))
-
-        E_Finales1=Datos_dupli(F.split(','))
-        E_Finales1=cambiarcaracter(E_Finales2,E_Finales1)
-
-        Gama1=_Gama(Datos_dupli(G.split(';')))
-        Gama1=cambiarcaractergama(ConjuntoQ2,Gama1)
-        Gama1=epsilon(Gama1)
+          alert("Formato ingresado no valido") 
     }
-
-    ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
-    Gama3=copiararray(Gama1,Gama2)
-    Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
-    E_Finales3=copiararray(E_Finales1,E_Finales2) 
-
-    console.log("Estados A1: ",ConjuntoQ1)
-    console.log("Alfabeto A1: ",Alfabeto1)
-    console.log("Transiciones A1: ",Gama1)
-    console.log("Estados finales A1: ",E_Finales1)
-    console.log("Estado inicial A1: ",E_inicial1)
-
-    console.log("Tabla de estados A1: ",tabla_estados(ConjuntoQ1,Alfabeto1,Gama1)) 
-    graph()
 }
 
 function ValidarEntrada2()
 {
     limpiar()
+    if(ConjuntoQ2.length>0)
+      ResetearAutomata(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2)
+
     E_inicial2=document.getElementById("Inicial").value
     var Q=document.getElementById("Q").value
     var A=document.getElementById("Alfabeto").value
     var G=document.getElementById("Gama").value
     var F=document.getElementById("Finales").value
 
-    let val=/^([a-zA-Z|0-9]+[,]?)+[a-zA-Z0-9]/g
-    let valg=/^(([a-zA-Z0-9]+[,]?)+[;]?)+[a-zA-Z0-9]/g
+    let valQ=/^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$/g
+    let valA=/^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$/g
+    let valF=/^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$/g
+    let valg=/^[a-zA-Z0-9]+,(@|[a-zA-Z0-9]+),[a-zA-Z0-9]+(;[a-zA-Z0-9]+,(@|[a-zA-Z0-9]+),[a-zA-Z0-9]+)*$/g
 
     if(Q.length == 0 || A.length == 0 || G.length == 0 || E_inicial2.length == 0 || F.length == 0)
         alert("Hay campos en blanco")
     else
     {
-       /*  if(val.test(Q) && val.test(A) && valg.test(G))
+        if(valQ.test(Q) && valA.test(A) && valg.test(G) && valF.test(F) && caractervalido(E_inicial2))
         {
-             Local_ConjuntoQ=Q.split(',')
-            Local_Alfabeto=A.split(',')
-            var preasig=G.split(';')
-            for(let index=0;index<preasig.length;index++)
-                Local_Gama.push(preasig[index].split(',')) 
+          E_inicial2=comparar_eini(E_inicial2,E_inicial1) 
+          ConjuntoQ2=Datos_dupli(Q.split(','))
+
+          if(validar_estadosx(ConjuntoQ2,E_inicial2))
+          {
+            ConjuntoQ2.splice(0,0,E_inicial2)
+            ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
+            ConjuntoQ2=Datos_dupli(ConjuntoQ2)
+          
+            Alfabeto2=Datos_dupli(A.split(','))
+
+            E_Finales2=Datos_dupli(F.split(','))
+            E_Finales2=cambiarcaracter(E_Finales1,E_Finales2)
+
+            Gama2=_Gama(Datos_dupli(G.split(';')))
+            Gama2=cambiarcaractergama(ConjuntoQ1,Gama2)
+            Gama2=epsilon(Gama2)
+
+            if(validar_estadosx(ConjuntoQ2,E_Finales2) && validar_gama(ConjuntoQ2,Alfabeto2,Gama2))
+            {
+              ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+              Gama3=copiararray(Gama1,Gama2)
+              Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+              E_Finales3=copiararray(E_Finales1,E_Finales2)
+
+              console.log("Estados A2: ",ConjuntoQ2)
+              console.log("Alfabeto A2: ",Alfabeto2)
+              console.log("Transiciones A2: ",Gama2)
+              console.log("Estados finales A2: ",E_Finales2)
+              console.log("Estado inicial A2: ",E_inicial2)
+
+              console.log("Tabla de estados A2: ",tabla_estados(ConjuntoQ2,Alfabeto2,Gama2))
+              graph()
+            }
+            else
+              alert("Lo datos ingresados no validos, deben estar contenidos en el alfabeto o en los estados")
+          }
+          else
+            alert("Lo datos ingresados no validos, el estado inicial debe estar contenido en el conjunto de estados")
         }
         else
-        alert("Formato ingresado no valido") */
-
-        E_inicial2=comparar_eini(E_inicial2,E_inicial1) 
-        ConjuntoQ2=Datos_dupli(Q.split(','))
-        ConjuntoQ2.splice(0,0,E_inicial2)
-        ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
-        ConjuntoQ2=Datos_dupli(ConjuntoQ2)
-        
-        Alfabeto2=Datos_dupli(A.split(','))
-
-        E_Finales2=Datos_dupli(F.split(','))
-        E_Finales2=cambiarcaracter(E_Finales1,E_Finales2)
-
-        Gama2=_Gama(Datos_dupli(G.split(';')))
-        Gama2=cambiarcaractergama(ConjuntoQ1,Gama2)
-        Gama2=epsilon(Gama2)
+          alert("Formato ingresado no valido") 
     }  
+}
 
-    ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
-    Gama3=copiararray(Gama1,Gama2)
-    Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
-    E_Finales3=copiararray(E_Finales1,E_Finales2)
+function ResetearAutomata(estados,alfabeto,gama,e_inicial,e_finales)
+{
+  estados=estados.splice(0,estados.length)
+  alfabeto=alfabeto.splice(0,alfabeto.length)
+  gama=gama.splice(0,gama.length)
+  e_inicial=null
+  e_finales=e_finales.splice(0,e_finales.length)
+}
 
-    console.log("Estados A2: ",ConjuntoQ2)
-    console.log("Alfabeto A2: ",Alfabeto2)
-    console.log("Transiciones A2: ",Gama2)
-    console.log("Estados finales A2: ",E_Finales2)
-    console.log("Estado inicial A2: ",E_inicial2)
+function validar_estadosx(comparador,a_comparar)
+{
+  if(Array.isArray(a_comparar))
+  {
+    for(let i=0;i<a_comparar.length;i++)
+    {
+      if(!comparador.includes(a_comparar[i]))
+        return false
+    }
+  }
+  else
+      if(!comparador.includes(a_comparar))
+        return false
+  return true
+}
 
-    console.log("Tabla de estados A2: ",tabla_estados(ConjuntoQ2,Alfabeto2,Gama2)) 
-    graph()
+function validar_gama(comparador1,comparador2,a_comparar)
+{
+  for(let i=0;i<a_comparar.length;i++)
+  {
+    if(!comparador1.includes(a_comparar[i][0]))
+      return false
+    if(!comparador2.includes(a_comparar[i][1]))
+      return false
+    if(!comparador1.includes(a_comparar[i][2]))
+      return false
+  }
+  return true
 }
 
 function limpiar()
@@ -448,7 +505,7 @@ function caractervalido(palabra)
 {
 	for(let i=0;i<palabra.length;i++)
   {
-  	if((palabra[i].charCodeAt()<48 && palabra[i].charCodeAt()>57) || (palabra[i].charCodeAt()<65 && palabra[i].charCodeAt()>90) || (palabra[i].charCodeAt()<97 && palabra[i].charCodeAt()>122))
+  	if(palabra[i].charCodeAt()<48 || (palabra[i].charCodeAt()>57 && palabra[i].charCodeAt()<65) || (palabra[i].charCodeAt()>90 && palabra[i].charCodeAt()<97) || palabra[i].charCodeAt()>122)
     	return false
   }
   return true
