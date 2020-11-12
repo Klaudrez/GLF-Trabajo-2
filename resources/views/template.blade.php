@@ -14,8 +14,7 @@
     
     <span class="d-block p-2 bg-dark text-white">
       <a href="{{route('inicio')}}" class="btn btn-primary">Inicio</a>
-      <a href="{{route('Afd')}}" class="btn btn-primary">Automata AFD</a>
-      <a href="{}" class="btn btn-primary">Automata AFND(off)</a>
+      <a href="{{route('Afd')}}" class="btn btn-primary">Automatas AFD/AFND</a>
       <a href="{{route('integrantes')}}" class="btn btn-primary">Integrantes</a>
       
       
