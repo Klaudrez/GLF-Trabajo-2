@@ -7,9 +7,6 @@
     </script> -->
 </head>
 <body>
-            
-</body>
-</html> 
 <!doctype html>
 <html>
 <head>
@@ -34,26 +31,59 @@
 <!-- <form method="post" action="#"> -->
 
 <!-- Ingreso de datos automata n°1 visual -->
+<h1>Instrucciones:</h1>
+    </br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Para:</th>
+          <th scope="col">Como hacerlo:  </th>
+        </tr>
+      </thead>  
+      <tbody>
+        <tr>
+          <th scope="row">Ingresar los estados de los automatas.</th>
+          <td>En el recuadro se han de ingresar valores alfanuméricos, letras o números separados por una ",".</td>
+        </tr>
+        <tr>
+          <th scope="row">Ingresar el alfabeto de los automatas.</th>
+          <td>En el recuadro se han de ingresar valores alfanuméricos, letras o números separados por una ",".</td>
+        </tr>
+        <tr>
+          <th scope="row">Ingresar el estado inicial del automata.</th>
+          <td>En el recuadro se ha de ingresar un solo valor el cual corresponde al estado inicial, este debe pertenecer al conjunto de estados ingresado anteriormente.</td>
+        </tr>
+          <th scope="row">Ingresar las Funciones de transición.</th>
+          <td>Será de la forma estado del automata, alfabeto, estado del automata, para agregar más de una transición se han de separar por ";", los valores ingresador han de extistir en los estados y en el alfabeto (Para ingresar una conexión vacía tipear un "@" en el apartado del alfabeto "estado,@,estado").</td>
+        </tr>
+        </tr>
+          <th scope="row">Ingresar los Estados Finales de los automatas.</th>
+          <td>Se han de ingresan los estados finales sepadaros mediante una "," y siempre y cuando estos pertenezcan al conjunto de estados. </td>
+        </tr>
+      </tbody>
+    </table>       
+</body>
+</html> 
 <br><h3>Datos Automatas:</h3>
 <table border="0"> 
 <tr>
 <td width="25%">Conjunto de estados Q:</td>
-<td width="70%"><input type="text" name="conjuntoQ" placeholder="q1,q2,q3,...,qn" id="Q" > Formato: estado1,estado2,estado3, </td>
+<td width="70%"><input type="text" name="conjuntoQ" placeholder="q1,q2,q3,...,qn" id="Q" > Formato: q1,q2,q3,...,qn </td>
 </tr>
 <tr>
 <td width="25%">Alfabeto:</td>
-<td width="70%"><input type="text" name="Alfabeto" placeholder="a,b,c,d,..." id="Alfabeto" > Formato: letra/num, </td>
+<td width="70%"><input type="text" name="Alfabeto" placeholder="a,b,c,d,..." id="Alfabeto" > Formato: 1,2,3,...,n </td>
 </tr>
 <tr>
 <td width="25%">Estado inicial:</td>
-<td width="70%"><input type="text" name="Inicial" placeholder="q" id="Inicial" > Formato: estado, </td>
+<td width="70%"><input type="text" name="Inicial" placeholder="q" id="Inicial" > Formato: q1 </td>
 </tr>
 <tr>
 <td width="25%">Función de transición:</td>
-<td width="70%"><input type="text" name="Gama" placeholder="q,a,q;" id="Gama" > Formato: estadoentrada,alfabeto,estadosalida; </td>
+<td width="70%"><input type="text" name="Gama" placeholder="q,a,q" id="Gama" > Formato: q1,a,q2;q1,b,q1;...qn,n,qm </td>
 <tr>
 <td width="25%">Estado(s) final(es):</td>
-<td width="70%"><input type="text" name="Finales" placeholder="q1,q2,q3,q4,..." id="Finales" > Formato: estado,estado </td><br>
+<td width="70%"><input type="text" name="Finales" placeholder="q1,q2,q3,q4" id="Finales" > Formato: q1,q2,...,qn </td><br>
 </tr>
 </table>
 <button onclick="ValidarEntrada1()">Ingresar automata 1</button>
