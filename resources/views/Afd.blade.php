@@ -58,6 +58,7 @@
 <button onclick="ValidarEntrada2()">Ingresar automata 2</button>
 <button onclick="simplificar1()">Simplificar automata 1 </button>
 <button onclick="simplificar2()">Simplificar automata 2 </button>
+<button onclick="reset()">Reset </button>
 
 <table border="0">  
 <caption>Funciones para ambos automatas</caption> 
@@ -65,6 +66,8 @@
 <button onclick="Complemento()">Complemento</button>
 <button onclick="Union()">Union</button>
 <button onclick="Concatenar()">Concatenacion</button>
+<input type="text" size="3" name="concatenarinicio" placeholder="inicio" id="Conca1" >
+<input type="text" size="3" name="concatenarfinal" placeholder="final" id="Conca2" >
 <button onclick="Interseccion()">Interseccion</button>
 <button onclick="SimplificarCombi()">Simplificar Automata (Union,Concatenacion,Interseccion)</button>
 </td>
@@ -94,7 +97,7 @@ function ValidarEntrada1()
     limpiar()
 
     if(ConjuntoQ1.length>0)
-      ResetearAutomata(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1)
+      E_inicial1=ResetearAutomata(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1)
 
     E_inicial1=document.getElementById("Inicial").value
     var Q=document.getElementById("Q").value
@@ -117,7 +120,7 @@ function ValidarEntrada1()
           ConjuntoQ1=Datos_dupli(Q.split(','))
           ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
           E_Finales1=Datos_dupli(F.split(','))
-          E_Finales1=cambiarcaracter(E_Finales2,E_Finales1)
+          E_Finales1=cambiarcaracter(ConjuntoQ2,E_Finales1)
       
           if(validar_estadosx(ConjuntoQ1,E_inicial1))
           {  
@@ -128,12 +131,12 @@ function ValidarEntrada1()
             Alfabeto1=Datos_dupli(A.split(','))
 
             E_Finales1=Datos_dupli(F.split(','))
-            E_Finales1=cambiarcaracter(E_Finales2,E_Finales1)
+            E_Finales1=cambiarcaracter(ConjuntoQ2,E_Finales1)
 
             Gama1=_Gama(Datos_dupli(G.split(';')))
-            Gama1=cambiarcaractergama(ConjuntoQ2,Gama1)
+            Gama1=cambiarcaractergama(Gama2,Gama1)
             Gama1=epsilon(Gama1)  
-            console.log(ConjuntoQ1,E_Finales1,Alfabeto1,Gama1)
+          
             if(validar_estadosx(ConjuntoQ1,E_Finales1) && validar_gama(ConjuntoQ1,Alfabeto1,Gama1))
             {
               ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
@@ -160,7 +163,7 @@ function ValidarEntrada2()
 {
     limpiar()
     if(ConjuntoQ2.length>0)
-      ResetearAutomata(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2)
+      E_inicial2=ResetearAutomata(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2)
 
     E_inicial2=document.getElementById("Inicial").value
     var Q=document.getElementById("Q").value
@@ -182,7 +185,7 @@ function ValidarEntrada2()
           E_inicial2=comparar_eini(E_inicial2,E_inicial1)
           ConjuntoQ2=Datos_dupli(Q.split(','))
           ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
-          console.log(ConjuntoQ2,E_inicial2)
+     
           if(validar_estadosx(ConjuntoQ2,E_inicial2))
           {
             ConjuntoQ2.splice(0,0,E_inicial2)
@@ -192,12 +195,13 @@ function ValidarEntrada2()
             Alfabeto2=Datos_dupli(A.split(','))
 
             E_Finales2=Datos_dupli(F.split(','))
-            E_Finales2=cambiarcaracter(E_Finales1,E_Finales2)
+            E_Finales2=cambiarcaracter(ConjuntoQ1,E_Finales2)
 
             Gama2=_Gama(Datos_dupli(G.split(';')))
-            Gama2=cambiarcaractergama(ConjuntoQ1,Gama2)
+            Gama2=cambiarcaractergama(Gama1,Gama2)
+        
             Gama2=epsilon(Gama2)
-          
+            
             if(validar_estadosx(ConjuntoQ2,E_Finales2) && validar_gama(ConjuntoQ2,Alfabeto2,Gama2))
             {
               ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
@@ -220,6 +224,21 @@ function ValidarEntrada2()
     }  
 }
 
+function reset()
+{
+  limpiar()
+  console.log("Datos borrados.")
+  E_inicial1=ResetearAutomata(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1)
+  console.log(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1)
+  E_inicial2=ResetearAutomata(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2)
+  console.log(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2)
+  E_inicial3=ResetearAutomata(ConjuntoQ3,Alfabeto3,Gama3,E_inicial3,E_Finales3)
+  console.log(ConjuntoQ3,Alfabeto3,Gama3,E_inicial3,E_Finales3)
+  E_inicialCombi=ResetearAutomata(ConjuntoCombi,[],GamaCombi,E_inicialCombi,E_FinalesCombi)
+  console.log(ConjuntoCombi,[],GamaCombi,E_inicialCombi,E_FinalesCombi)
+  graph()
+}
+
 function ResetearAutomata(estados,alfabeto,gama,e_inicial,e_finales)
 {
   estados=estados.splice(0,estados.length)
@@ -227,6 +246,7 @@ function ResetearAutomata(estados,alfabeto,gama,e_inicial,e_finales)
   gama=gama.splice(0,gama.length)
   e_inicial=null
   e_finales=e_finales.splice(0,e_finales.length)
+  return e_inicial
 }
 
 function validar_estadosx(comparador,a_comparar)
@@ -302,6 +322,7 @@ function simplificar1()
       E_Finales1=afd[4]
 
       CojuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
+      console.log(Gama1,Gama2,cambiarcaractergama(Gama2,Gama1))
       Gama1=cambiarcaractergama(Gama2,Gama1)
       
       ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
@@ -341,6 +362,7 @@ function simplificar2()
       Gama2=afd[3]
       E_Finales2=afd[4]
 
+      console.log(Gama1,Gama2,cambiarcaractergama(Gama1,Gama2))
       CojuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
       Gama2=cambiarcaractergama(Gama1,Gama2)
       
@@ -590,7 +612,7 @@ function Union()
   limpiar()
   if(ConjuntoQ1.length>0 && ConjuntoQ2.length>0)
   {
-    if(CompararArray(Alfabeto1,Alfabeto2))
+    if(compararalfabeto(Alfabeto1,Alfabeto2))
     {
       mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
       mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
@@ -655,48 +677,110 @@ function Concatenar()
   limpiar()
   if(ConjuntoQ1.length>0 && ConjuntoQ2.length>0)
   {
-    if(CompararArray(Alfabeto1,Alfabeto2))
+    if(compararalfabeto(Alfabeto1,Alfabeto2))
     {
-      mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
-      mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
-
-      ConjuntoCombi=copiararray(ConjuntoQ1,ConjuntoQ2)
-      GamaCombi=copiararray(Gama1,Gama2)
-      E_FinalesCombi=copiararray(E_Finales1,E_Finales2)
-
-      E_inicialCombi=E_inicial1
-
-      for(let i=0;i<=E_Finales1.length;i++)
+      var a1=document.getElementById("Conca1").value
+      var a2=document.getElementById("Conca2").value
+      if(a1.length>0 && a2.length>0)
       {
-        i=0
-        GamaCombi.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
-        E_Finales1.splice(i,1) 
-        E_FinalesCombi.splice(i,1)
+        if((a1=="1" || a1=="2") && (a2=="1" || a2=="2") && a1!=a2)
+        {
+          if(a1=="1")
+          {
+            mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+            mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+
+            ConjuntoCombi=copiararray(ConjuntoQ1,ConjuntoQ2)
+            GamaCombi=copiararray(Gama1,Gama2)
+            E_FinalesCombi=copiararray(E_Finales1,E_Finales2)
+
+            E_inicialCombi=E_inicial1
+
+            var copia_e_f=copiararray(E_Finales1,[])
+
+            for(let i=0;i<=copia_e_f.length;i++)
+            {
+              i=0
+              GamaCombi.splice(0,0,concatenarconexion(copia_e_f[i],E_inicial2))
+              copia_e_f.splice(i,1) 
+              E_FinalesCombi.splice(i,1)
+            }
+
+            GamaCombi=epsilon(GamaCombi)
+
+            /* ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+            Gama3=copiararray(Gama1,Gama2) */
+
+            /* E_inicial3=E_inicial1
+
+            for(let i=0;i<=E_Finales1.length;i++)
+            {
+              i=0
+              Gama3.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
+              E_Finales1.splice(i,1) 
+              E_Finales3.splice(i,1)
+            }
+            Gama3=epsilon(Gama3) */
+
+            ConjuntoQ3=copiararray(ConjuntoCombi,[])
+            Gama3=copiararray(GamaCombi,[])
+            Alfabeto3=copiararray(Alfabeto1,[])
+            E_Finales3=copiararray(E_FinalesCombi,[]) 
+            mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ac")
+
+            graph()
+          }
+          else
+          {
+            mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+            mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+
+            ConjuntoCombi=copiararray(ConjuntoQ2,ConjuntoQ1)
+            GamaCombi=copiararray(Gama2,Gama1)
+            E_FinalesCombi=copiararray(E_Finales2,E_Finales1)
+
+            E_inicialCombi=E_inicial2
+
+            var copia_e_f=copiararray(E_Finales2,[])
+
+            for(let i=0;i<=copia_e_f.length;i++)
+            {
+              i=0
+              GamaCombi.splice(0,0,concatenarconexion(copia_e_f[i],E_inicial1))
+              copia_e_f.splice(i,1) 
+              E_FinalesCombi.splice(i,1)
+            }
+
+            GamaCombi=epsilon(GamaCombi)
+
+            /* ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+            Gama3=copiararray(Gama1,Gama2) */
+
+            /* E_inicial3=E_inicial1
+
+            for(let i=0;i<=E_Finales1.length;i++)
+            {
+              i=0
+              Gama3.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
+              E_Finales1.splice(i,1) 
+              E_Finales3.splice(i,1)
+            }
+            Gama3=epsilon(Gama3) */
+
+            ConjuntoQ3=copiararray(ConjuntoCombi,[])
+            Gama3=copiararray(GamaCombi,[])
+            Alfabeto3=copiararray(Alfabeto1,[])
+            E_Finales3=copiararray(E_FinalesCombi,[]) 
+            mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ac")
+
+            graph()
+          }
+        }
+        else
+          alert("Los automatas ingresados no coinciden con [1,2] o ingreso el mismo automata dos veces")
       }
-
-      GamaCombi=epsilon(GamaCombi)
-
-      /* ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
-      Gama3=copiararray(Gama1,Gama2) */
-
-      /* E_inicial3=E_inicial1
-
-      for(let i=0;i<=E_Finales1.length;i++)
-      {
-        i=0
-        Gama3.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
-        E_Finales1.splice(i,1) 
-        E_Finales3.splice(i,1)
-      }
-      Gama3=epsilon(Gama3) */
-
-      ConjuntoQ3=copiararray(ConjuntoCombi,[])
-      Gama3=copiararray(GamaCombi,[])
-      Alfabeto3=copiararray(Alfabeto1,[])
-      E_Finales3=copiararray(E_FinalesCombi,[]) 
-      mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ac")
-
-      graph()
+      else
+        alert("No deben quedar en blanco los campos de concatenacion")
     }
     else
       alert("No comparten concordancias en sus alfabetos")
@@ -926,6 +1010,8 @@ function estados3alfaconsumido(estado,gama)
 
     for(let i=estados3.length-1;i>0;i--)
     {
+      if(tiene3(estados3[i],copiag))
+        respuesta+=estados3alfaconsumido(estados3[i],copiag) 
     	for(let j=0;j<copiag.length;j++)
       {
         if(estados3[i]==copiag[j][2] && copiag[j][1]=="$" && copiag[j][0]==estados3[i-1])
@@ -948,6 +1034,9 @@ function estado3alfasinconsumir(estado,alfa,gama)
   {
     var estados3=estados3deE(estado,copiag)
     for(let i=estados3.length-1;i>0;i--)
+    {
+      if(tiene3(estados3[i],copiag))
+        respuesta+=estado3alfasinconsumir(estados3[i],alfa,copiag)
       for(let j=0;j<copiag.length;j++)
       {
         if(estados3[i]==copiag[j][0] && copiag[j][1]==alfa)
@@ -958,6 +1047,7 @@ function estado3alfasinconsumir(estado,alfa,gama)
             j=0
         }
       }
+    }
   }
   return respuesta
 }
@@ -969,13 +1059,21 @@ function añadirconex3(matriz,gama)
     for(let j=1;j<matriz[0].length;j++)
     {
       var respuesta=""
+      respuesta+=estados3alfaconsumido(matriz[i][j],gama)
+      respuesta+=estado3alfasinconsumir(matriz[i][0],matriz[0][j],gama)
       if(matriz[i][j]!="-")
       {
-        respuesta+=estados3alfaconsumido(matriz[i][j],gama)
-        respuesta+=estado3alfasinconsumir(matriz[i][0],matriz[0][j],gama)
+        matriz[i][j]+=respuesta
+        matriz[i][j]=artostr(Datos_dupli(matriz[i][j].split(",")))
       }
-      matriz[i][j]+=respuesta
-      matriz[i][j]=artostr(Datos_dupli(matriz[i][j].split(",")))
+      else
+      {
+        if(respuesta!="")
+        {
+          matriz[i][j]=respuesta.substring(1,respuesta.length)
+          matriz[i][j]=artostr(Datos_dupli(matriz[i][j].split(",")))
+        }
+      }
     }
   }
   return matriz
@@ -1009,10 +1107,14 @@ function cambiarcaractergama(g1,g2)
   for(let i=0;i<g1.length;i++)
     for(let j=0;j<g2.length;j++)
     {
-      if(g1[i]==g2[j][0])
-        g2[j][0]=compararletra(g1[i],g2[j][0])
-      if(g1[i]==g2[j][2])
-        g2[j][2]=compararletra(g1[i],g2[j][2])
+      if(g1[i][0]==g2[j][0])
+        g2[j][0]=compararletra(g1[i][0],g2[j][0])
+      if(g1[i][0]==g2[j][2])
+        g2[j][2]=compararletra(g1[i][0],g2[j][2])
+      if(g1[i][2]==g2[j][0])
+        g2[j][0]=compararletra(g1[i][2],g2[j][0])
+      if(g1[i][2]==g2[j][2])
+        g2[j][2]=compararletra(g1[i][2],g2[j][2])
     } 
   return g2
 }
@@ -1447,8 +1549,6 @@ function transicion_repetida(transicion,gama,posicion)
 
 function CompararArray(arr1,arr2)
 {
-  if(arr1.length!=arr2.length)
-    return false
   for(let i=0;i<arr1.length;i++)
   {
     if(!arr2.includes(arr1[i]))
@@ -1530,6 +1630,31 @@ function artostr(arreglo)
       r+=arreglo[i]
   }
   return r
+}
+function compararalfabeto(arr1,arr2)
+{
+  if(comparararreglo(arr1,arr2) && comparararreglo(arr2,arr1))
+    return true
+  else
+    return false
+}
+function comparararreglo(arr1,arr2)
+{
+  for(let i=0;i<arr1.length;i++)
+  {
+    if(!existealfa(arr1[i],arr2))
+      return false
+  }
+  return true
+}
+
+function existealfa(string,arreglo)
+{
+  var strr=string.split("")
+  for(let i=0;i<strr.length;i++)
+    if(!arreglo.includes(strr[i]))
+      return false
+  return true
 }
 
 </script>
