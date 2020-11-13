@@ -56,8 +56,8 @@
 </table>
 <button onclick="ValidarEntrada1()">Ingresar automata 1</button>
 <button onclick="ValidarEntrada2()">Ingresar automata 2</button>
-<button onclick="simplificar1()">Simplificar automata1 </button>
-<button onclick="simplificar2()">Simplificar automata2 </button>
+<button onclick="simplificar1()">Simplificar automata 1 </button>
+<button onclick="simplificar2()">Simplificar automata 2 </button>
 
 <table border="0">  
 <caption>Funciones para ambos automatas</caption> 
@@ -66,6 +66,7 @@
 <button onclick="Union()">Union</button>
 <button onclick="Concatenar()">Concatenacion</button>
 <button onclick="Interseccion()">Interseccion</button>
+<button onclick="SimplificarCombi()">Simplificar Automata (Union,Concatenacion,Interseccion)</button>
 </td>
 </table>
 
@@ -75,15 +76,15 @@
 
 <script type="text/javascript">
 
-var E_inicial1="",E_inicial2="",E_inicial3
+var E_inicial1="",E_inicial2="",E_inicial3,E_inicialCombi
 
-var ConjuntoQ1=[],ConjuntoQ2=[],ConjuntoQ3=[]
+var ConjuntoQ1=[],ConjuntoQ2=[],ConjuntoQ3=[],ConjuntoCombi=[]
 
 var Alfabeto1=[],Alfabeto2=[],Alfabeto3=[]
 
-var Gama1=[],Gama2=[],Gama3=[]
+var Gama1=[],Gama2=[],Gama3=[],GamaCombi=[]
 
-var E_Finales1=[],E_Finales2=[],E_Finales3=[]
+var E_Finales1=[],E_Finales2=[],E_Finales3=[],E_FinalesCombi=[]
 
 var node,edge,data,container,options,network
 
@@ -114,6 +115,10 @@ function ValidarEntrada1()
         {
           E_inicial1=comparar_eini(E_inicial1,E_inicial2) 
           ConjuntoQ1=Datos_dupli(Q.split(','))
+          ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
+          E_Finales1=Datos_dupli(F.split(','))
+          E_Finales1=cambiarcaracter(E_Finales2,E_Finales1)
+      
           if(validar_estadosx(ConjuntoQ1,E_inicial1))
           {  
             ConjuntoQ1.splice(0,0,E_inicial1)
@@ -128,20 +133,16 @@ function ValidarEntrada1()
             Gama1=_Gama(Datos_dupli(G.split(';')))
             Gama1=cambiarcaractergama(ConjuntoQ2,Gama1)
             Gama1=epsilon(Gama1)  
-           
+            console.log(ConjuntoQ1,E_Finales1,Alfabeto1,Gama1)
             if(validar_estadosx(ConjuntoQ1,E_Finales1) && validar_gama(ConjuntoQ1,Alfabeto1,Gama1))
             {
               ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
               Gama3=copiararray(Gama1,Gama2)
               Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
               E_Finales3=copiararray(E_Finales1,E_Finales2) 
-              console.log("Estados A1: ",ConjuntoQ1)
-              console.log("Alfabeto A1: ",Alfabeto1)
-              console.log("Transiciones A1: ",Gama1)
-              console.log("Estados finales A1: ",E_Finales1)
-              console.log("Estado inicial A1: ",E_inicial1)
+              
+              mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
 
-              console.log("Tabla de estados A1: ",tabla_estados(ConjuntoQ1,Alfabeto1,Gama1)) 
               graph()
             }
             else
@@ -178,9 +179,10 @@ function ValidarEntrada2()
     {
         if(valQ.test(Q) && valA.test(A) && valg.test(G) && valF.test(F) && caractervalido(E_inicial2))
         {
-          E_inicial2=comparar_eini(E_inicial2,E_inicial1) 
+          E_inicial2=comparar_eini(E_inicial2,E_inicial1)
           ConjuntoQ2=Datos_dupli(Q.split(','))
-
+          ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
+          console.log(ConjuntoQ2,E_inicial2)
           if(validar_estadosx(ConjuntoQ2,E_inicial2))
           {
             ConjuntoQ2.splice(0,0,E_inicial2)
@@ -195,7 +197,7 @@ function ValidarEntrada2()
             Gama2=_Gama(Datos_dupli(G.split(';')))
             Gama2=cambiarcaractergama(ConjuntoQ1,Gama2)
             Gama2=epsilon(Gama2)
-
+          
             if(validar_estadosx(ConjuntoQ2,E_Finales2) && validar_gama(ConjuntoQ2,Alfabeto2,Gama2))
             {
               ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
@@ -203,13 +205,8 @@ function ValidarEntrada2()
               Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
               E_Finales3=copiararray(E_Finales1,E_Finales2)
 
-              console.log("Estados A2: ",ConjuntoQ2)
-              console.log("Alfabeto A2: ",Alfabeto2)
-              console.log("Transiciones A2: ",Gama2)
-              console.log("Estados finales A2: ",E_Finales2)
-              console.log("Estado inicial A2: ",E_inicial2)
+              mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
 
-              console.log("Tabla de estados A2: ",tabla_estados(ConjuntoQ2,Alfabeto2,Gama2))
               graph()
             }
             else
@@ -254,7 +251,12 @@ function validar_gama(comparador1,comparador2,a_comparar)
   {
     if(!comparador1.includes(a_comparar[i][0]))
       return false
-    if(!comparador2.includes(a_comparar[i][1]))
+    /* console.log(a_comparar[i][1])
+    console.log(comparador2)
+    console.log(a_comparar)
+    console.log(!comparador2.includes(a_comparar[i][1]))
+    console.log(a_comparar[i][1]=="$") */
+    if(!(comparador2.includes(a_comparar[i][1])||a_comparar[i][1]=="$"))
       return false
     if(!comparador1.includes(a_comparar[i][2]))
       return false
@@ -267,47 +269,319 @@ function limpiar()
   console.clear()
 }
 
+function mostrardatos(conjunto,alfabeto,gama,e_ini,e_final,Nautomata)
+{
+    console.log("Estados "+Nautomata+":",conjunto)
+    console.log("Alfabeto "+Nautomata+":",alfabeto)
+    console.log("Transiciones "+Nautomata+":",gama)
+    console.log("Estados finales "+Nautomata+":",e_final)
+    console.log("Estado inicial "+Nautomata+":",e_ini)
+
+    console.log("Tabla de estados "+Nautomata+":",añadirconex3(tabla_estados(conjunto,alfabeto,gama),gama)) 
+}
+
 function simplificar1()
 {
   limpiar()
-  if(EsAFD(ConjuntoQ1,Alfabeto1,Gama1))
-    optimizar(ConjuntoQ1,ConjuntoQ2,Alfabeto1,Gama1,Gama2,E_Finales1)
+  if(ConjuntoQ1.length>0)
+  {
+    if(EsAFD(ConjuntoQ1,Alfabeto1,Gama1))
+    {
+      if(ConjuntoQ1.length>1)
+        optimizar(ConjuntoQ1,ConjuntoQ2,Alfabeto1,Gama1,Gama2,E_Finales1)
+      else
+        alert("No es posible reducir un automata afd con un solo estado")
+    }
+    else
+    {
+      var afd=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ1,Alfabeto1,Gama1),Gama1),E_inicial1,E_Finales1,ConjuntoQ1,Alfabeto1,Gama1)
+      E_inicial1=afd[0]
+      ConjuntoQ1=afd[1]
+      Alfabeto1=afd[2]
+      Gama1=afd[3]
+      E_Finales1=afd[4]
+
+      CojuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
+      Gama1=cambiarcaractergama(Gama2,Gama1)
+      
+      ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+      Gama3=copiararray(Gama1,Gama2)
+      Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+      E_Finales3=copiararray(E_Finales1,E_Finales2) 
+      
+      mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1") 
+
+      graph()
+      
+      alert("El automata no era afd, por lo cual se transformo en afd. Presione simplificar1 nuevamente para llevar a cabo la reduccion")
+    }
+  }
   else
-    alert("no es afd")
+    alert("No se ha ingresado un automata")
 }
 
 function simplificar2()
 {
   limpiar()
-  if(EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
-    optimizar(ConjuntoQ2,ConjuntoQ1,Alfabeto2,Gama2,Gama1,E_Finales2)
+  if(ConjuntoQ2.length>0)
+  {
+    if(EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+    {
+      if(ConjuntoQ2.length>1)
+        optimizar(ConjuntoQ2,ConjuntoQ1,Alfabeto2,Gama2,Gama1,E_Finales2)
+      else
+        alert("No es posible reducir un automata afd con un solo estado")
+    }
+    else
+    {
+      var afd=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ2,Alfabeto2,Gama2),Gama2),E_inicial2,E_Finales2,ConjuntoQ2,Alfabeto2,Gama2)
+      E_inicial2=afd[0]
+      ConjuntoQ2=afd[1]
+      Alfabeto2=afd[2]
+      Gama2=afd[3]
+      E_Finales2=afd[4]
+
+      CojuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
+      Gama2=cambiarcaractergama(Gama1,Gama2)
+      
+      ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+      Gama3=copiararray(Gama1,Gama2)
+      Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+      E_Finales3=copiararray(E_Finales1,E_Finales2) 
+
+      mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+
+      graph()
+      
+      alert("El automata no era afd, por lo cual se transformo en afd. Presione simplificar1 nuevamente para llevar a cabo la reduccion")
+    }
+  }
   else
-    alert("no es afd")
+    alert("No se ha ingresado un automata")
+}
+
+function SimplificarCombi()
+{
+  limpiar()
+  if(ConjuntoQ1.length>0 && ConjuntoQ2.length>0 && ConjuntoCombi.length>0)
+  {
+    if(EsAFD(ConjuntoCombi,Alfabeto1,GamaCombi))
+    {
+      if(ConjuntoCombi.length>1)
+        optimizar(ConjuntoCombi,[],Alfabeto1,GamaCombi,[],E_FinalesCombi)
+      else
+        alert("No es posible reducir un automata afd con un solo estado")
+    }
+    else
+    {
+      var afd=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoCombi,Alfabeto1,GamaCombi),GamaCombi),E_inicialCombi,E_FinalesCombi,ConjuntoCombi,Alfabeto1,GamaCombi)
+      E_inicialCombi=afd[0]
+      ConjuntoCombi=afd[1]
+      Alfabeto1=afd[2]
+      GamaCombi=afd[3]
+      E_FinalesCombi=afd[4]
+
+      ConjuntoQ3=copiararray(ConjuntoCombi,[])
+      Gama3=copiararray(GamaCombi,[])
+      Alfabeto3=copiararray(Alfabeto1,[])
+      E_Finales3=copiararray(E_FinalesCombi,[]) 
+      
+      mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"A combinado") 
+
+      graph()
+      
+      alert("El automata no era afd, por lo cual se transformo en afd. Presione el boton nuevamente para llevar a cabo la reduccion")
+    }
+  }
+  else
+    alert("No ha ingresado ambos automatas o no ha combinado dichos automatas")
 }
 
 function Complemento()
 {
   limpiar()
-  if(EsAFD(ConjuntoQ1,Alfabeto1,Gama1) && EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+  if(ConjuntoQ1.length>0 && ConjuntoQ2.length==0 && ConjuntoCombi.length==0)
   {
-    complemento(ConjuntoQ1,E_Finales1)
-    complemento(ConjuntoQ2,E_Finales2)
+    if(EsAFD(ConjuntoQ1,Alfabeto1,Gama1))
+    {  
+      complemento(ConjuntoQ1,E_Finales1)
+      mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+    }
+    else
+    {
+      var afd=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ1,Alfabeto1,Gama1),Gama1),E_inicial1,E_Finales1,ConjuntoQ1,Alfabeto1,Gama1)
+      E_inicial1=afd[0]
+      ConjuntoQ1=afd[1]
+      Alfabeto1=afd[2]
+      Gama1=afd[3]
+      E_Finales1=afd[4]
+      
+      ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+      Gama3=copiararray(Gama1,Gama2)
+      Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+      E_Finales3=copiararray(E_Finales1,E_Finales2) 
 
-    console.log("Estados A1: ",ConjuntoQ1)
-    console.log("Alfabeto A1: ",Alfabeto1)
-    console.log("Transiciones A1: ",Gama1)
-    console.log("Estados finales A1: ",E_Finales1)
-    console.log("Estado inicial A1: ",E_inicial1)
+      complemento(ConjuntoQ1,E_Finales1)
+      mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+      graph()
+    }
+  }
+  else
+  {
+    if(ConjuntoQ1.length==0 && ConjuntoQ2.length>0 && ConjuntoCombi.length==0)
+    {
+      if(EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+      {
+          complemento(ConjuntoQ2,E_Finales2)
+          mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+      }
+      else
+      {
+        var afd=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ2,Alfabeto2,Gama2),Gama2),E_inicial2,E_Finales2,ConjuntoQ2,Alfabeto2,Gama2)
+        E_inicial2=afd[0]
+        ConjuntoQ2=afd[1]
+        Alfabeto2=afd[2]
+        Gama2=afd[3]
+        E_Finales2=afd[4]
+        
+        ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+        Gama3=copiararray(Gama1,Gama2)
+        Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+        E_Finales3=copiararray(E_Finales1,E_Finales2) 
 
-    console.log("Estados A2: ",ConjuntoQ2)
-    console.log("Alfabeto A2: ",Alfabeto2)
-    console.log("Transiciones A2: ",Gama2)
-    console.log("Estados finales A2: ",E_Finales2)
-    console.log("Estado inicial A2: ",E_inicial2)
+        complemento(ConjuntoQ2,E_Finales2)
+        mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+        graph()
+      }
+    }
+    else
+    {
+      if(ConjuntoQ1.length>0 && ConjuntoQ2.length>0 && ConjuntoCombi.length==0)
+      {
+        if(EsAFD(ConjuntoQ1,Alfabeto1,Gama1) && EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+        {
+          complemento(ConjuntoQ1,E_Finales1)
+          complemento(ConjuntoQ2,E_Finales2)
+          mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+          mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+        }
+        else
+        {
+          if(!EsAFD(ConjuntoQ1,Alfabeto1,Gama1) && EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+          {
+            var afd=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ1,Alfabeto1,Gama1),Gama1),E_inicial1,E_Finales1,ConjuntoQ1,Alfabeto1,Gama1)
+            E_inicial1=afd[0]
+            ConjuntoQ1=afd[1]
+            Alfabeto1=afd[2]
+            Gama1=afd[3]
+            E_Finales1=afd[4]
 
-    E_Finales3=copiararray(E_Finales1,E_Finales2)
+            complemento(ConjuntoQ1,E_Finales1)
+            complemento(ConjuntoQ2,E_Finales2)
+      
+            ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+            Gama3=copiararray(Gama1,Gama2)
+            Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+            E_Finales3=copiararray(E_Finales1,E_Finales2) 
 
-    graph()
+            mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+            mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+            graph()
+          }
+          else
+          {
+            if(EsAFD(ConjuntoQ1,Alfabeto1,Gama1) && !EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+            {
+              var afd=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ2,Alfabeto2,Gama2),Gama2),E_inicial2,E_Finales2,ConjuntoQ2,Alfabeto2,Gama2)
+              E_inicial2=afd[0]
+              ConjuntoQ2=afd[1]
+              Alfabeto2=afd[2]
+              Gama2=afd[3]
+              E_Finales2=afd[4]
+              
+              complemento(ConjuntoQ1,E_Finales1)
+              complemento(ConjuntoQ2,E_Finales2)
+
+              ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+              Gama3=copiararray(Gama1,Gama2)
+              Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+              E_Finales3=copiararray(E_Finales1,E_Finales2) 
+
+              mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+              mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+              graph()
+            }
+            else
+            {
+              var afd1=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ1,Alfabeto1,Gama1),Gama1),E_inicial1,E_Finales1,ConjuntoQ1,Alfabeto1,Gama1)
+              E_inicial1=afd1[0]
+              ConjuntoQ1=afd1[1]
+              Alfabeto1=afd1[2]
+              Gama1=afd1[3]
+              E_Finales1=afd1[4]
+
+              complemento(ConjuntoQ1,E_Finales1)
+
+              var afd2=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ2,Alfabeto2,Gama2),Gama2),E_inicial2,E_Finales2,ConjuntoQ2,Alfabeto2,Gama2)
+              E_inicial2=afd2[0]
+              ConjuntoQ2=afd2[1]
+              Alfabeto2=afd2[2]
+              Gama2=afd2[3]
+              E_Finales2=afd2[4]
+
+              ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
+              Gama2=cambiarcaractergama(ConjuntoQ1,Gama2)
+
+              complemento(ConjuntoQ2,E_Finales2)
+
+              ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+              Gama3=copiararray(Gama1,Gama2)
+              Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
+              E_Finales3=copiararray(E_Finales1,E_Finales2) 
+
+              mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+              mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+              graph()
+            }
+          }
+        }
+      }
+      else
+      {
+        if(ConjuntoQ1.length>0 && ConjuntoQ2.length>0 && ConjuntoCombi.length>0)
+        {
+          if(EsAFD(ConjuntoCombi,Alfabeto1,GamaCombi))
+          {
+            complemento(ConjuntoCombi,E_FinalesCombi)
+            mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ac")
+          }
+          else
+          {
+            var afd1=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoCombi,Alfabeto1,GamaCombi),GamaCombi),E_inicialCombi,E_FinalesCombi,ConjuntoCombi,Alfabeto1,GamaCombi)
+            E_inicialCombi=afd1[0]
+            ConjuntoCombi=afd1[1]
+            Alfabeto1=afd1[2]
+            GamaCombi=afd1[3]
+            E_FinalesCombi=afd1[4]
+
+            complemento(ConjuntoCombi,E_FinalesCombi)
+
+            ConjuntoQ3=copiararray(ConjuntoCombi,[])
+            Gama3=copiararray(GamaCombi,[])
+            Alfabeto3=copiararray(Alfabeto1,[])
+            E_Finales3=copiararray(E_FinalesCombi,[]) 
+
+            mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ac")
+            graph()
+          }
+        }
+        else
+        {
+          if(ConjuntoQ1.length==0 && ConjuntoQ2.length==0 && ConjuntoCombi.length==0)
+            alert("No se han ingresado automatas")
+        }
+      }
+    }
   }
 }
 
@@ -316,30 +590,38 @@ function Union()
   limpiar()
   if(ConjuntoQ1.length>0 && ConjuntoQ2.length>0)
   {
-    console.log("Estados A1: ",ConjuntoQ1)
-    console.log("Alfabeto A1: ",Alfabeto1)
-    console.log("Transiciones A1: ",Gama1)
-    console.log("Estados A2: ",ConjuntoQ2)
-    console.log("Alfabeto A2: ",Alfabeto2)
-    console.log("Transiciones A2: ",Gama2)
-    var inicio1=ConjuntoQ1[0]
-    var inicio2=ConjuntoQ2[0]
-    E_inicial3="X"
-    ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
-    ConjuntoQ3.splice(0,0,E_inicial3)
-    Gama3=copiararray(Gama1,Gama2)
-    
-    Gama3.splice(0,0,conexionu(inicio1))
-    Gama3.splice(0,0,conexionu(inicio2))
+    if(CompararArray(Alfabeto1,Alfabeto2))
+    {
+      mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+      mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
 
-    Gama3=epsilon(Gama3)
+      var inicio1=ConjuntoQ1[0]
+      var inicio2=ConjuntoQ2[0]
 
-    console.log("Estados U: ",ConjuntoQ3)
-    console.log("Alfabeto U: ",Alfabeto3)
-    console.log("Transiciones U: ",Gama3)
-    console.log("Estados finales U: ",E_Finales3)
-    console.log("Estado inicial U: ",E_inicial3)
-    graph()
+      E_inicialCombi="X"
+
+      ConjuntoCombi=copiararray(ConjuntoQ1,ConjuntoQ2)
+      ConjuntoCombi.splice(0,0,E_inicialCombi)
+
+      GamaCombi=copiararray(Gama1,Gama2)
+      
+      GamaCombi.splice(0,0,conexionu(inicio1))
+      GamaCombi.splice(0,0,conexionu(inicio2))
+
+      GamaCombi=epsilon(GamaCombi)
+
+      E_FinalesCombi=copiararray(E_Finales1,E_Finales2)
+
+      ConjuntoQ3=copiararray(ConjuntoCombi,[])
+      Gama3=copiararray(GamaCombi,[])
+      Alfabeto3=copiararray(Alfabeto1,[])
+      E_Finales3=copiararray(E_FinalesCombi,[]) 
+
+      mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Au")
+      graph()
+    }
+    else
+      alert("Los automatas no tienen coincidencias en sus alfabetos")
   }
   else
     alert("Debe ingresar ambos automatas")
@@ -373,42 +655,197 @@ function Concatenar()
   limpiar()
   if(ConjuntoQ1.length>0 && ConjuntoQ2.length>0)
   {
-    console.log("Estados A1: ",ConjuntoQ1)
-    console.log("Alfabeto A1: ",Alfabeto1)
-    console.log("Transiciones A1: ",Gama1)
-    console.log("Estados finales A1: ",E_Finales1)
-    console.log("Estado inicial A1: ",E_inicial1)
-    console.log("Estados A2: ",ConjuntoQ2)
-    console.log("Alfabeto A2: ",Alfabeto2)
-    console.log("Transiciones A2: ",Gama2)
-    console.log("Estados finales A2: ",E_Finales2)
-    console.log("Estado inicial A2: ",E_inicial2)
-
-    ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
-    Gama3=copiararray(Gama1,Gama2)
-
-    E_inicial3=E_inicial1
-
-    for(let i=0;i<=E_Finales1.length;i++)
+    if(CompararArray(Alfabeto1,Alfabeto2))
     {
-      i=0
-      Gama3.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
-      E_Finales1.splice(i,1) 
-      E_Finales3.splice(i,1)
+      mostrardatos(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1,"A1")
+      mostrardatos(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2,"A2")
+
+      ConjuntoCombi=copiararray(ConjuntoQ1,ConjuntoQ2)
+      GamaCombi=copiararray(Gama1,Gama2)
+      E_FinalesCombi=copiararray(E_Finales1,E_Finales2)
+
+      E_inicialCombi=E_inicial1
+
+      for(let i=0;i<=E_Finales1.length;i++)
+      {
+        i=0
+        GamaCombi.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
+        E_Finales1.splice(i,1) 
+        E_FinalesCombi.splice(i,1)
+      }
+
+      GamaCombi=epsilon(GamaCombi)
+
+      /* ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
+      Gama3=copiararray(Gama1,Gama2) */
+
+      /* E_inicial3=E_inicial1
+
+      for(let i=0;i<=E_Finales1.length;i++)
+      {
+        i=0
+        Gama3.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
+        E_Finales1.splice(i,1) 
+        E_Finales3.splice(i,1)
+      }
+      Gama3=epsilon(Gama3) */
+
+      ConjuntoQ3=copiararray(ConjuntoCombi,[])
+      Gama3=copiararray(GamaCombi,[])
+      Alfabeto3=copiararray(Alfabeto1,[])
+      E_Finales3=copiararray(E_FinalesCombi,[]) 
+      mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ac")
+
+      graph()
     }
-    Gama3=epsilon(Gama3)
-
-    
-    console.log("Estados A1 c A2: ",ConjuntoQ3)
-    console.log("Alfabeto A1 c A2: ",Alfabeto3)
-    console.log("Transiciones A1 c A2: ",Gama3)
-    console.log("Estados finales A1 c A2: ",E_Finales3)
-    console.log("Estado inicial A1 c A2: ",E_inicial3)
-
-    graph()
+    else
+      alert("No comparten concordancias en sus alfabetos")
   }
   else
     alert("Debe ingresar ambos automatas")
+}
+
+function Interseccion()
+{
+  if(ConjuntoQ1.length>0 && ConjuntoQ2.length>0)
+  {
+    if(EsAFD(ConjuntoQ1,Alfabeto1,Gama1) && EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+    {
+      complemento(ConjuntoQ1,E_Finales1)
+      complemento(ConjuntoQ2,E_Finales2)
+      Union()
+      var afd1=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoCombi,Alfabeto1,GamaCombi),GamaCombi),E_inicialCombi,E_FinalesCombi,ConjuntoCombi,Alfabeto1,GamaCombi)
+      E_inicialCombi=afd1[0]
+      ConjuntoCombi=afd1[1]
+      Alfabeto1=afd1[2]
+      GamaCombi=afd1[3]
+      E_FinalesCombi=afd1[4]
+
+      complemento(ConjuntoCombi,E_FinalesCombi)
+
+      ConjuntoQ3=copiararray(ConjuntoCombi,[])
+      Gama3=copiararray(GamaCombi,[])
+      Alfabeto3=copiararray(Alfabeto1,[])
+      E_Finales3=copiararray(E_FinalesCombi,[]) 
+
+      mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ai")
+      graph()
+
+    }
+    else
+    {
+      if(!EsAFD(ConjuntoQ1,Alfabeto1,Gama1) && EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+      {
+        var afd1=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ1,Alfabeto1,Gama1),Gama1),E_inicial1,E_Finales1,ConjuntoQ1,Alfabeto1,Gama1)
+        E_inicial1=afd1[0]
+        ConjuntoQ1=afd1[1]
+        Alfabeto1=afd1[2]
+        Gama1=afd1[3]
+        E_Finales1=afd1[4]
+
+        complemento(ConjuntoQ1,E_Finales1)
+        complemento(ConjuntoQ2,E_Finales2)
+
+        Union()
+
+        var afdc=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoCombi,Alfabeto1,GamaCombi),GamaCombi),E_inicialCombi,E_FinalesCombi,ConjuntoCombi,Alfabeto1,GamaCombi)
+        E_inicialCombi=afdc[0]
+        ConjuntoCombi=afdc[1]
+        Alfabeto1=afdc[2]
+        GamaCombi=afdc[3]
+        E_FinalesCombi=afdc[4]
+
+        complemento(ConjuntoCombi,E_FinalesCombi)
+
+        ConjuntoQ3=copiararray(ConjuntoCombi,[])
+        Gama3=copiararray(GamaCombi,[])
+        Alfabeto3=copiararray(Alfabeto1,[])
+        E_Finales3=copiararray(E_FinalesCombi,[]) 
+
+        mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ai")
+        graph()
+
+      }
+      else
+      {
+        if(EsAFD(ConjuntoQ1,Alfabeto1,Gama1) && !EsAFD(ConjuntoQ2,Alfabeto2,Gama2))
+        {
+          var afd2=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ2,Alfabeto2,Gama2),Gama2),E_inicial2,E_Finales2,ConjuntoQ2,Alfabeto2,Gama2)
+          E_inicial2=afd2[0]
+          ConjuntoQ2=afd2[1]
+          Alfabeto2=afd2[2]
+          Gama2=afd2[3]
+          E_Finales2=afd2[4]
+
+          complemento(ConjuntoQ1,E_Finales1)
+          complemento(ConjuntoQ2,E_Finales2)
+
+          Union()
+
+          var afdc=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoCombi,Alfabeto1,GamaCombi),GamaCombi),E_inicialCombi,E_FinalesCombi,ConjuntoCombi,Alfabeto1,GamaCombi)
+          E_inicialCombi=afdc[0]
+          ConjuntoCombi=afdc[1]
+          Alfabeto1=afdc[2]
+          GamaCombi=afdc[3]
+          E_FinalesCombi=afdc[4]
+
+          complemento(ConjuntoCombi,E_FinalesCombi)
+
+          ConjuntoQ3=copiararray(ConjuntoCombi,[])
+          Gama3=copiararray(GamaCombi,[])
+          Alfabeto3=copiararray(Alfabeto1,[])
+          E_Finales3=copiararray(E_FinalesCombi,[]) 
+
+          mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ai")
+          graph()
+        }
+        else
+        {
+          var afd1=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ1,Alfabeto1,Gama1),Gama1),E_inicial1,E_Finales1,ConjuntoQ1,Alfabeto1,Gama1)
+          E_inicial1=afd1[0]
+          ConjuntoQ1=afd1[1]
+          Alfabeto1=afd1[2]
+          Gama1=afd1[3]
+          E_Finales1=afd1[4]
+
+          complemento(ConjuntoQ1,E_Finales1)
+
+          var afd2=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoQ2,Alfabeto2,Gama2),Gama2),E_inicial2,E_Finales2,ConjuntoQ2,Alfabeto2,Gama2)
+          E_inicial2=afd2[0]
+          ConjuntoQ2=afd2[1]
+          Alfabeto2=afd2[2]
+          Gama2=afd2[3]
+          E_Finales2=afd2[4]
+
+          ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
+          Gama2=cambiarcaractergama(ConjuntoQ1,Gama2)
+
+          complemento(ConjuntoQ2,E_Finales2)
+
+          Union()
+
+          var afdc=afnd_to_afd(añadirconex3(tabla_estados(ConjuntoCombi,Alfabeto1,GamaCombi),GamaCombi),E_inicialCombi,E_FinalesCombi,ConjuntoCombi,Alfabeto1,GamaCombi)
+          E_inicialCombi=afdc[0]
+          ConjuntoCombi=afdc[1]
+          Alfabeto1=afdc[2]
+          GamaCombi=afdc[3]
+          E_FinalesCombi=afdc[4]
+
+          complemento(ConjuntoCombi,E_FinalesCombi)
+
+          ConjuntoQ3=copiararray(ConjuntoCombi,[])
+          Gama3=copiararray(GamaCombi,[])
+          Alfabeto3=copiararray(Alfabeto1,[])
+          E_Finales3=copiararray(E_FinalesCombi,[]) 
+
+          mostrardatos(ConjuntoCombi,Alfabeto1,GamaCombi,E_inicialCombi,E_FinalesCombi,"Ai")
+          graph()
+        }
+      }
+    }
+  }
+  else
+    alert("Debe ingresar ambos automatas para realizar la interseccion")
 }
 
 function concatenarconexion(inicio,fin)
@@ -425,25 +862,123 @@ function concatenarconexion(inicio,fin)
   }
   return resultado
 }
-
+                    //q0,r0
 function comparar_eini(estado1,estado2)
 {
   if(estado1!="" && estado2!="")
   {
-    if(caractervalido(estado1) && caractervalido(estado2))
-    {
       if(estado1==estado2)
       {
         if(estado2[0].charCodeAt()==57 || estado2[0].charCodeAt()==90 || estado2[0].charCodeAt()==122)
           estado2=estado2.replace(estado2[0],String.fromCharCode(estado2[0].charCodeAt()-1))
         else
           estado2=estado2.replace(estado2[0],String.fromCharCode(estado2[0].charCodeAt()+1))
+        return estado2
       }
-    }
-    return estado2
+      else
+        return estado1
   }
   return estado1
 
+}
+
+function estados3deE(estado,gama)
+{
+  var resultado=[]
+  resultado.push(estado)
+  for(let i=0;i<gama.length;i++)
+    if(estado==gama[i][0]&&gama[i][1]=="$")
+    {
+      resultado.push(gama[i][2])
+      estado=gama[i][2]
+    }
+  return resultado
+}
+
+function tiene3(estado,gama)
+{
+  for(let i=0;i<gama.length;i++)
+    if(estado==gama[i][0]&&gama[i][1]=="$")
+      return true
+  return false
+}
+
+function copia(gama)
+{
+  var resultado=[]
+  for(let i=0;i<gama.length;i++)
+  {
+    var conex=[]
+    for(let j=0;j<3;j++)
+      conex.push(gama[i][j])
+    resultado.push(conex)
+  }
+  return resultado
+}
+
+function estados3alfaconsumido(estado,gama)
+{
+  var respuesta=""
+  var copiag=copia(gama)
+  while(tiene3(estado,copiag))
+  {
+    var estados3=estados3deE(estado,copiag)
+
+    for(let i=estados3.length-1;i>0;i--)
+    {
+    	for(let j=0;j<copiag.length;j++)
+      {
+        if(estados3[i]==copiag[j][2] && copiag[j][1]=="$" && copiag[j][0]==estados3[i-1])
+        {
+          copiag.splice(j,1)
+          j=0
+          respuesta=respuesta +","+estados3[i]
+        }
+      }
+     }
+  }
+  return respuesta
+}
+
+function estado3alfasinconsumir(estado,alfa,gama)
+{
+  var respuesta=""
+  var copiag=copia(gama)
+  while(tiene3(estado,copiag))
+  {
+    var estados3=estados3deE(estado,copiag)
+    for(let i=estados3.length-1;i>0;i--)
+      for(let j=0;j<copiag.length;j++)
+      {
+        if(estados3[i]==copiag[j][0] && copiag[j][1]==alfa)
+          respuesta=respuesta + "," + copiag[j][2]
+        if(estados3[i]==copiag[j][2] && copiag[j][1]=="$" && copiag[j][0]==estados3[i-1])
+        {
+            copiag.splice(j,1)
+            j=0
+        }
+      }
+  }
+  return respuesta
+}
+
+function añadirconex3(matriz,gama)
+{
+  for(let i=1;i<matriz.length;i++)
+  {
+    for(let j=1;j<matriz[0].length;j++)
+    {
+      var respuesta=""
+      if(matriz[i][j]!="-")
+      {
+        respuesta+=estados3alfaconsumido(matriz[i][j],gama)
+        respuesta+=estado3alfasinconsumir(matriz[i][0],matriz[0][j],gama)
+      }
+      matriz[i][j]+=respuesta
+      matriz[i][j]=artostr(Datos_dupli(matriz[i][j].split(",")))
+    }
+  }
+  return matriz
 }
 
 function copiararray(datos1,datos2)
@@ -679,7 +1214,7 @@ function tabla_estados(estados,alfabeto,Ftrans)
               if(columnas[jdex]==null)
                 columnas.push(Ftrans[i][2])
               else
-                columnas[jdex]+=Ftrans[i][2]
+                columnas[jdex]=columnas[jdex]+","+Ftrans[i][2]
               paso=1
             }
           }
@@ -691,27 +1226,8 @@ function tabla_estados(estados,alfabeto,Ftrans)
   }
   return matriz
 }
+    
 
-/* function transiciones_e(estados,gama)
-{
-  var resultado=[]
-  for(let i=0;i<estados.length;i++)
-    for(let j=0;j<gama.length;j++)
-      if(estados[i]==gama[j][0]&&gama[j][1]=="$")
-      {
-        var pos=[]
-        pos.push(gama[j][0])
-        pos.push(gama[j][2])
-        resultado.push(pos)
-      }
-  return resultado
-}     
-
-function TieneE(estado,estados_e)
-{
-  for(let i=0;i<estados_e.length;i++)
-    if()
-} */
 // Funciones para simplificar afd
 
 /* function Compatibles() */
@@ -801,9 +1317,65 @@ function matriz_distinguible(matriz,estados,alfa,estados_f)
   return matriz_resultado
 }
 
-function afnd_to_afd(estados,alfabeto,gama)
+function afnd_to_afd(matriz,estado_i,estado_f,conjuntoq,alfabeto,gama)
 {
-
+  estado_i+=estados3alfaconsumido(estado_i,gama)
+  var nuevoQ=[]
+  var nuevoG=[]
+  var nuevoF=[]
+  nuevoQ.push(estado_i)
+  for(let i=0;i<nuevoQ.length;i++)
+  {  
+    for(let j=0;j<alfabeto.length;j++)
+    {
+      if(nuevoQ[i]!="S")
+      {
+        var estadoU=""
+        var estadoaux=nuevoQ[i].split(",")
+        /* console.log(estadoaux) */
+        for(let k=0;k<estadoaux.length;k++)
+        {
+          if(Cdirige(matriz,estadoaux[k],alfabeto[j])!="-")
+          {
+            if(estadoU!="")
+              estadoU=estadoU+","+Cdirige(matriz,estadoaux[k],alfabeto[j])
+            else
+              estadoU+=Cdirige(matriz,estadoaux[k],alfabeto[j])
+            /* console.log(Cdirige(matriz,estadoaux[k],alfabeto[j])) */
+          }
+        }
+        if(estadoU!="")
+        {
+          estadoU=artostr(Datos_dupli(estadoU.split(",")))
+          nuevoG.push(añadirtransicion(nuevoQ[i],alfabeto[j],estadoU))
+          if(noexiste(estadoU,nuevoQ))
+            nuevoQ.push(estadoU)
+          if(existefinal(estadoU,estado_f))
+            nuevoF.push(estadoU)
+        }
+        else
+        {
+          estadoU="S"
+          nuevoG.push(añadirtransicion(nuevoQ[i],alfabeto[j],estadoU))
+          if(noexiste(estadoU,nuevoQ))
+            nuevoQ.push(estadoU)
+        }
+      }
+      else
+        nuevoG.push(añadirtransicion(nuevoQ[i],alfabeto[j],nuevoQ[i])) 
+    }
+  }
+  if(existefinal(nuevoQ[0],estado_f))
+    nuevoF.push(nuevoQ[0])
+  var respuesta=[]
+  nuevoF=Datos_dupli(nuevoF)
+  respuesta.push(estado_i)
+  respuesta.push(nuevoQ)
+  respuesta.push(alfabeto)
+  respuesta.push(nuevoG)
+  respuesta.push(nuevoF)
+  
+  return respuesta
 }
 
 function final_nofinal(id,estadosf)
@@ -851,6 +1423,8 @@ function EsAFD(estados,alfabeto,gama)
         if(transicion_repetida(gama[j],gama,j))
           cont++
       }
+      if(gama[j][1]=="$")
+        return false
     }
     if(cont!=alfabeto.length)
       return false
@@ -870,39 +1444,93 @@ function transicion_repetida(transicion,gama,posicion)
   }
   return true
 }
+
+function CompararArray(arr1,arr2)
+{
+  if(arr1.length!=arr2.length)
+    return false
+  for(let i=0;i<arr1.length;i++)
+  {
+    if(!arr2.includes(arr1[i]))
+      return false
+  }
+  return true
+}
                   //estados - estados finales
 function complemento(arreglo1,arreglo2)
 {
-  for(let index=0;index<arreglo1.length;index++)
-  {
-    if(!arreglo2.includes(arreglo1[index]))
-      arreglo2.push(arreglo1[index])
-    else
-      arreglo2.splice(arreglo1[index],1)
-  }
+ for(let i=0;i<arreglo1.length;i++)
+ {
+   if(arreglo2.includes(arreglo1[i]))
+     arreglo2.splice(Buscar_id(arreglo2,arreglo1[i])-1,1)
+   else
+    arreglo2.push(arreglo1[i]) 
+ }
 }
-                          //ConjuntoQ,Gama
-/* function simplificar(matriz,arreglo1,arreglo2)
-{
-  var matriz_d=matriz_distinguible(matriz,arreglo1,arreglo2)
-  var id_d=buscar_disti(matriz_d)
-  
-  for(let index=0;index<arreglo2.length;index++)
-  {
-    if(arreglo2[index][0]==arreglo1[id_d[1]])
-      arreglo2.splice(index,1)
-    if(arreglo2[index][2]==arreglo1[id_d[1]])
-    {
-      var aux=[]
-      aux.push(arreglo2[index][0])
-      aux.push(arreglo2[index][1])
-      aux.push(arreglo1[id_d[1]])
 
-      arreglo2.splice(index,1,aux)
-    }
+function añadirtransicion(estado_e,alfa,estado_s)
+{
+  var conex=[]
+  conex.push(estado_e)
+  conex.push(alfa)
+  conex.push(estado_s)
+  return conex
+}
+
+function Cdirige(matriz,estado,alfa)
+{
+  for(let i=1;i<matriz.length;i++)
+    for(let j=1;j<matriz[0].length;j++)
+      if(matriz[i][0]==estado && matriz[0][j]==alfa)
+        return matriz[i][j]
+}
+
+function soniguales(string1,string2)
+{
+  var str1=string1.split(",")
+  var str2=string2.split(",")
+
+  if(str1.length!=str2.length)
+    return false
+  for(let i=0;i<str1.length;i++)
+    if(!str2.includes(str1[i]))
+      return false
+  return true
+}
+
+function existefinal(string,arreglo)
+{
+  var strr=string.split(",")
+  for(let i=0;i<strr.length;i++)
+    if(arreglo.includes(strr[i]))
+      return true
+  return false
+}
+
+function noexiste(estado,conjunto)
+{
+  var bitc=0
+  for(let i=0;i<conjunto.length;i++)
+    if(soniguales(conjunto[i],estado))
+      bitc=1
+  if(bitc==1)
+    return false
+  else
+    return true
+}
+
+function artostr(arreglo)
+{
+  var r=""
+  for(let i=0;i<arreglo.length;i++)
+  {
+    if(i>0)
+      r=r+","+arreglo[i]
+    else
+      r+=arreglo[i]
   }
-  arreglo1.splice(id_d[1],1)
-} */
+  return r
+}
 
 </script>
 </body>
