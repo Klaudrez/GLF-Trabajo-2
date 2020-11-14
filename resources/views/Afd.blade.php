@@ -2,7 +2,12 @@
 
 @section('seccion')
 <h4>Instrucciones:</h4>
-<div id="mostrarOcultar" style="wigth:1100px; height: 510px; background-color: #d9ad26">
+<style type="text/css">
+  .hidden{
+    display:none;
+  }
+</style>
+<div id="mostrarOcultar" style="wigth:1100px; height: 510px; background-color: #d9ad26" class="hidden">
     <table class="table">
       <thead>
         <tr>
