@@ -168,7 +168,7 @@ function ValidarEntrada1()
           ConjuntoQ1=Datos_dupli(Q.split(','))
           var id_ini=Buscar_id(ConjuntoQ1,E_inicial1)-1
           //E_inicial1=comparar_eini(E_inicial1,E_inicial2)
-          E_inicial1 =  ConjuntoQ1[id_ini]
+          //E_inicial1 =  ConjuntoQ1[id_ini]
           ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
           E_inicial1 =  ConjuntoQ1[id_ini]
           E_Finales1=Datos_dupli(F.split(','))
@@ -176,9 +176,9 @@ function ValidarEntrada1()
           console.log(ConjuntoQ1,E_inicial1)
           if(validar_estadosx(ConjuntoQ1,E_inicial1))
           {  
-            ConjuntoQ1.splice(0,0,E_inicial1)
-            ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
-            ConjuntoQ1=Datos_dupli(ConjuntoQ1)
+            //ConjuntoQ1.splice(0,0,E_inicial1)
+            //ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
+            //ConjuntoQ1=Datos_dupli(ConjuntoQ1)
         
             Alfabeto1=Datos_dupli(A.split(','))
 
@@ -188,7 +188,8 @@ function ValidarEntrada1()
             Gama1=_Gama(Datos_dupli(G.split(';')))
             Gama1=cambiarcaractergama(Gama2,Gama1)
             Gama1=epsilon(Gama1)  
-          
+            console.log(validar_estadosx(ConjuntoQ1,E_Finales1), validar_gama(ConjuntoQ1,Alfabeto1,Gama1))
+            console.log(ConjuntoQ1,E_Finales1)
             if(validar_estadosx(ConjuntoQ1,E_Finales1) && validar_gama(ConjuntoQ1,Alfabeto1,Gama1))
             {
               ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
@@ -1144,33 +1145,35 @@ function copiararray(datos1,datos2)
   return resultado
 }
 
-function cambiarcaracter(dato1,dato2)
+function cambiarcaracter(estados1,estados2)
 {
-  for(let j=0;j<dato1.length;j++)
-    for(let x=0;x<dato2.length;x++)
+  for(let i=0;i<estados1.length;i++)
+  {
+    if(estados2.includes(estados1[i]))
     {
-      /* while(dato2.includes(compararletra(dato1[j],dato2[x]))){
-        if(dato2[x][0].charCodeAt()==57 || dato2[x][0].charCodeAt()==90 || dato2[x][0].charCodeAt()==122){
-      	//palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-1))
-          if(dato2[x][0].charCodeAt()==57){
-            dato2[x][0]=dato2[x][0].replace(dato2[x][0],String.fromCharCode(dato2[x][0].charCodeAt()+8))
+      var indice=estados2.indexOf(estados1[i])
+      var aux=estados2[indice]
+      while(estados2.includes(aux)&& estados1.includes(aux) )
+      {
+          if(aux[0].charCodeAt()==57 || aux[0].charCodeAt()==90 ||  aux[0].charCodeAt()==122){
+
+          if(aux[0].charCodeAt()==57){
+            aux=aux.replace(aux[0],String.fromCharCode(aux[0].charCodeAt()+8))
           }
-          if(dato2[x][0].charCodeAt()==90){
-            dato2[x][0]=dato2[x][0].replace(dato2[x][0],String.fromCharCode(dato2[x][0].charCodeAt()+7))
+          if(aux[0].charCodeAt()==90){
+            aux=aux.replace(aux[0],String.fromCharCode(aux[0].charCodeAt()+7))
           }
-          if(palabra2[0].charCodeAt()==122){
-            palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-74))
+          if(aux[0].charCodeAt()==122){
+            aux=aux.replace(aux[0],String.fromCharCode(aux[0].charCodeAt()-74))
           }
-       }
-       else
-      	 palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()+1))
-      } */
-      while(dato2.includes(compararletra(dato1[j],dato2[x]))){
-        dato2[x][0]=dato2[x].replace(dato2[x][0],String.fromCharCode(dato2[x][0].charCodeAt()+1))
+         }
+         else
+              aux=aux.replace(aux[0],String.fromCharCode(aux[0].charCodeAt()+1)) 
       }
-  	  dato2[x]=compararletra(dato1[j],dato2[x])
+      estados2[indice]=aux
     }
-  return dato2
+  }
+ return estados2
 }
 
 function cambiarcaractergama(g1,g2)
