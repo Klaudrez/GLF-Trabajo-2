@@ -2,7 +2,7 @@
 
 @section('seccion')
 <h4>Instrucciones:</h4>
-<div id="mostrarOcultar" style="wigth:1100px; height: 510px; background-color: #d9ad26">
+<div id="mostrarOcultar" style="background-color: #d9ad26">
     <table class="table">
       <thead>
         <tr>
@@ -165,12 +165,15 @@ function ValidarEntrada1()
     {
         if(valQ.test(Q) && valA.test(A) && valG.test(G) && valF.test(F) && caractervalido(E_inicial1))
         {
-          E_inicial1=comparar_eini(E_inicial1,E_inicial2) 
           ConjuntoQ1=Datos_dupli(Q.split(','))
+          var id_ini=Buscar_id(ConjuntoQ1,E_inicial1)-1
+          //E_inicial1=comparar_eini(E_inicial1,E_inicial2)
+          E_inicial1 =  ConjuntoQ1[id_ini]
           ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
+          E_inicial1 =  ConjuntoQ1[id_ini]
           E_Finales1=Datos_dupli(F.split(','))
           E_Finales1=cambiarcaracter(ConjuntoQ2,E_Finales1)
-      
+          console.log(ConjuntoQ1,E_inicial1)
           if(validar_estadosx(ConjuntoQ1,E_inicial1))
           {  
             ConjuntoQ1.splice(0,0,E_inicial1)
@@ -1146,6 +1149,25 @@ function cambiarcaracter(dato1,dato2)
   for(let j=0;j<dato1.length;j++)
     for(let x=0;x<dato2.length;x++)
     {
+      /* while(dato2.includes(compararletra(dato1[j],dato2[x]))){
+        if(dato2[x][0].charCodeAt()==57 || dato2[x][0].charCodeAt()==90 || dato2[x][0].charCodeAt()==122){
+      	//palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-1))
+          if(dato2[x][0].charCodeAt()==57){
+            dato2[x][0]=dato2[x][0].replace(dato2[x][0],String.fromCharCode(dato2[x][0].charCodeAt()+8))
+          }
+          if(dato2[x][0].charCodeAt()==90){
+            dato2[x][0]=dato2[x][0].replace(dato2[x][0],String.fromCharCode(dato2[x][0].charCodeAt()+7))
+          }
+          if(palabra2[0].charCodeAt()==122){
+            palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-74))
+          }
+       }
+       else
+      	 palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()+1))
+      } */
+      while(dato2.includes(compararletra(dato1[j],dato2[x]))){
+        dato2[x][0]=dato2[x].replace(dato2[x][0],String.fromCharCode(dato2[x][0].charCodeAt()+1))
+      }
   	  dato2[x]=compararletra(dato1[j],dato2[x])
     }
   return dato2
@@ -1176,8 +1198,18 @@ function compararletra(palabra1,palabra2)
   {
   	if(palabra1==palabra2)
     {
-    	if(palabra2[0].charCodeAt()==57 || palabra2[0].charCodeAt()==90 || palabra2[0].charCodeAt()==122)
-      	palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-1))
+    	if(palabra2[0].charCodeAt()==57 || palabra2[0].charCodeAt()==90 || palabra2[0].charCodeAt()==122){
+      	//palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-1))
+        if(palabra2[0].charCodeAt()==57){
+          palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()+8))
+        }
+        if(palabra2[0].charCodeAt()==90){
+          palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()+7))
+        }
+        if(palabra2[0].charCodeAt()==122){
+          palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-74))
+        }
+      }
       else
       	palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()+1))
     }
