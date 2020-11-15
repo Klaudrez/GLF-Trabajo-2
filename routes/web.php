@@ -14,5 +14,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('inicio');
 });
+
+Route::get('/Afd', function(){
+    return view('Afd');
+})->name('Afd');
+
+Route::get('/inicio', function () {
+    return view('inicio');
+})->name('inicio');
+
+Route::get('/integrantes', function () {
+    return view('integrantes');
+})->name('integrantes');
