@@ -7,7 +7,7 @@
     display:none;
   }
 </style>
-<div id="mostrarOcultar" style="wigth:1100px; height: 510px; background-color: #d9ad26" class="hidden">
+<div id="mostrarOcultar" style=" background-color: #d9ad26" class="hidden">
     <table class="table">
       <thead>
         <tr>
