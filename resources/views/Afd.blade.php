@@ -38,15 +38,17 @@
           <th scope="row">Ejemplo de la clase.</th>
           <td>Conjunto de estados: q1,q2,q3,q4,q5 , Alfabeto: a,b, Estado Inicial: q5, Función de transición: q5,a,q4;q5,b,q3;q4,a,q4;q4,b,q2;q3,a,q4;q3,b,q1;q2,a,q4;q2,b,q1;q1,a,q1;q1,b,q1, Estado(s) final(es): q2,q3,q4,q5.</td>
         </tr>
+      </tr>
+    </tr>
+      <th scope="row">Detalles del algoritmo</th>
+      <td>Para ver los resultados en detalle (conjunto de estados, alfabeto, estado inicial,  transiciones, estados finales) puede verlos desde la consola haciendo click derecho/inspeccionar elemento en la pestaña console</td>
+    </tr>
       </tbody>
     </table>   
 </div>
 <input type="button" value="Mostrar Instrucciones" onclick="mostrar();">
 <input type="button" value="Ocultar Instrucciones" onclick="ocultar();">
 <head>
-    <!-- <script type="text/javascript" src="vis/disc">
-    
-    </script> -->
 </head>
 <body>
 <!doctype html>
@@ -166,32 +168,25 @@ function ValidarEntrada1()
         if(valQ.test(Q) && valA.test(A) && valG.test(G) && valF.test(F) && caractervalido(E_inicial1))
         {
           ConjuntoQ1=Datos_dupli(Q.split(','))
-          var id_ini=Buscar_id(ConjuntoQ1,E_inicial1)-1
-          //E_inicial1=comparar_eini(E_inicial1,E_inicial2)
-          //E_inicial1 =  ConjuntoQ1[id_ini]
-          ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
-          E_inicial1 =  ConjuntoQ1[id_ini]
+          Alfabeto1=Datos_dupli(A.split(','))
           E_Finales1=Datos_dupli(F.split(','))
-          E_Finales1=cambiarcaracter(ConjuntoQ2,E_Finales1)
-          console.log(ConjuntoQ1,E_inicial1)
+          Gama1=_Gama(Datos_dupli(G.split(';')))
+          var idFinales = ids(E_Finales1,ConjuntoQ1)
+          var idGama = ids_gama(Gama1,ConjuntoQ1)
+          var id_ini=Buscar_id(ConjuntoQ1,E_inicial1)-1
           if(validar_estadosx(ConjuntoQ1,E_inicial1))
-          {  
-            //ConjuntoQ1.splice(0,0,E_inicial1)
-            //ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
-            //ConjuntoQ1=Datos_dupli(ConjuntoQ1)
-        
-            Alfabeto1=Datos_dupli(A.split(','))
-
-            E_Finales1=Datos_dupli(F.split(','))
-            E_Finales1=cambiarcaracter(ConjuntoQ2,E_Finales1)
-
-            Gama1=_Gama(Datos_dupli(G.split(';')))
-            Gama1=cambiarcaractergama(Gama2,Gama1)
-            Gama1=epsilon(Gama1)  
-            console.log(validar_estadosx(ConjuntoQ1,E_Finales1), validar_gama(ConjuntoQ1,Alfabeto1,Gama1))
-            console.log(ConjuntoQ1,E_Finales1)
+          { 
             if(validar_estadosx(ConjuntoQ1,E_Finales1) && validar_gama(ConjuntoQ1,Alfabeto1,Gama1))
             {
+              ConjuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
+              E_inicial1 =  ConjuntoQ1[id_ini]
+              E_Finales1 = e_finales(idFinales,ConjuntoQ1)
+              Gama1 = gama(idGama,ConjuntoQ1)
+              ConjuntoQ1.splice(0,0,E_inicial1)
+              ConjuntoQ1=Datos_dupli(ConjuntoQ1)
+          
+
+              Gama1=epsilon(Gama1)  
               ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
               Gama3=copiararray(Gama1,Gama2)
               Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
@@ -201,11 +196,15 @@ function ValidarEntrada1()
 
               graph()
             }
-            else
+            else{
               alert("Lo datos ingresados no validos, deben estar contenidos en el alfabeto o en los estados")
+              E_inicial1=ResetearAutomata(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1)
+            }
           }
-          else
+          else{
             alert("Lo datos ingresados no validos, el estado inicial debe estar contenido en el conjunto de estados")
+            E_inicial1=ResetearAutomata(ConjuntoQ1,Alfabeto1,Gama1,E_inicial1,E_Finales1)
+          }
         }
         else
           alert("Formato ingresado no valido") 
@@ -215,8 +214,10 @@ function ValidarEntrada1()
 function ValidarEntrada2()
 {
     limpiar()
-    if(ConjuntoQ2.length>0)
+    if(ConjuntoQ2.length>0){
+
       E_inicial2=ResetearAutomata(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2)
+    }
 
     E_inicial2=document.getElementById("Inicial").value
     var Q=document.getElementById("Q").value
@@ -233,30 +234,32 @@ function ValidarEntrada2()
         alert("Hay campos en blanco")
     else
     {
+        
         if(valQ.test(Q) && valA.test(A) && valg.test(G) && valF.test(F) && caractervalido(E_inicial2))
         {
-          E_inicial2=comparar_eini(E_inicial2,E_inicial1)
+          
           ConjuntoQ2=Datos_dupli(Q.split(','))
-          ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
-     
+          Alfabeto2=Datos_dupli(A.split(','))
+          E_Finales2=Datos_dupli(F.split(','))
+          Gama2=_Gama(Datos_dupli(G.split(';')))
+          var idFinales = ids(E_Finales2,ConjuntoQ2)
+          var idGama = ids_gama(Gama2,ConjuntoQ2)
+          var id_ini=Buscar_id(ConjuntoQ2,E_inicial2)-1
           if(validar_estadosx(ConjuntoQ2,E_inicial2))
           {
-            ConjuntoQ2.splice(0,0,E_inicial2)
-            ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
-            ConjuntoQ2=Datos_dupli(ConjuntoQ2)
-          
-            Alfabeto2=Datos_dupli(A.split(','))
-
-            E_Finales2=Datos_dupli(F.split(','))
-            E_Finales2=cambiarcaracter(ConjuntoQ1,E_Finales2)
-
-            Gama2=_Gama(Datos_dupli(G.split(';')))
-            Gama2=cambiarcaractergama(Gama1,Gama2)
-        
-            Gama2=epsilon(Gama2)
-            
             if(validar_estadosx(ConjuntoQ2,E_Finales2) && validar_gama(ConjuntoQ2,Alfabeto2,Gama2))
             {
+              ConjuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
+
+              E_inicial2 =  ConjuntoQ2[id_ini]
+              E_Finales2 = e_finales(idFinales,ConjuntoQ2)
+              Gama2 = gama(idGama,ConjuntoQ2)
+              ConjuntoQ2.splice(0,0,E_inicial2)
+              ConjuntoQ2=Datos_dupli(ConjuntoQ2)
+            
+          
+              Gama2=epsilon(Gama2)
+              
               ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
               Gama3=copiararray(Gama1,Gama2)
               Alfabeto3=copiararray(Alfabeto1,Alfabeto2)
@@ -266,11 +269,15 @@ function ValidarEntrada2()
 
               graph()
             }
-            else
+            else{
               alert("Lo datos ingresados no validos, deben estar contenidos en el alfabeto o en los estados")
+              E_inicial2=ResetearAutomata(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2)
+            }
           }
-          else
+          else{
             alert("Lo datos ingresados no validos, el estado inicial debe estar contenido en el conjunto de estados")
+            E_inicial2=ResetearAutomata(ConjuntoQ2,Alfabeto2,Gama2,E_inicial2,E_Finales2)
+          }
         }
         else
           alert("Formato ingresado no valido") 
@@ -324,11 +331,6 @@ function validar_gama(comparador1,comparador2,a_comparar)
   {
     if(!comparador1.includes(a_comparar[i][0]))
       return false
-    /* console.log(a_comparar[i][1])
-    console.log(comparador2)
-    console.log(a_comparar)
-    console.log(!comparador2.includes(a_comparar[i][1]))
-    console.log(a_comparar[i][1]=="$") */
     if(!(comparador2.includes(a_comparar[i][1])||a_comparar[i][1]=="$"))
       return false
     if(!comparador1.includes(a_comparar[i][2]))
@@ -375,7 +377,6 @@ function simplificar1()
       E_Finales1=afd[4]
 
       CojuntoQ1=cambiarcaracter(ConjuntoQ2,ConjuntoQ1)
-      console.log(Gama1,Gama2,cambiarcaractergama(Gama2,Gama1))
       Gama1=cambiarcaractergama(Gama2,Gama1)
       
       ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
@@ -415,7 +416,6 @@ function simplificar2()
       Gama2=afd[3]
       E_Finales2=afd[4]
 
-      console.log(Gama1,Gama2,cambiarcaractergama(Gama1,Gama2))
       CojuntoQ2=cambiarcaracter(ConjuntoQ1,ConjuntoQ2)
       Gama2=cambiarcaractergama(Gama1,Gama2)
       
@@ -761,20 +761,7 @@ function Concatenar()
 
             GamaCombi=epsilon(GamaCombi)
 
-            /* ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
-            Gama3=copiararray(Gama1,Gama2) */
-
-            /* E_inicial3=E_inicial1
-
-            for(let i=0;i<=E_Finales1.length;i++)
-            {
-              i=0
-              Gama3.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
-              E_Finales1.splice(i,1) 
-              E_Finales3.splice(i,1)
-            }
-            Gama3=epsilon(Gama3) */
-
+           
             ConjuntoQ3=copiararray(ConjuntoCombi,[])
             Gama3=copiararray(GamaCombi,[])
             Alfabeto3=copiararray(Alfabeto1,[])
@@ -806,19 +793,7 @@ function Concatenar()
 
             GamaCombi=epsilon(GamaCombi)
 
-            /* ConjuntoQ3=copiararray(ConjuntoQ1,ConjuntoQ2)
-            Gama3=copiararray(Gama1,Gama2) */
-
-            /* E_inicial3=E_inicial1
-
-            for(let i=0;i<=E_Finales1.length;i++)
-            {
-              i=0
-              Gama3.splice(0,0,concatenarconexion(E_Finales1[i],E_inicial2))
-              E_Finales1.splice(i,1) 
-              E_Finales3.splice(i,1)
-            }
-            Gama3=epsilon(Gama3) */
+           
 
             ConjuntoQ3=copiararray(ConjuntoCombi,[])
             Gama3=copiararray(GamaCombi,[])
@@ -1153,7 +1128,7 @@ function cambiarcaracter(estados1,estados2)
     {
       var indice=estados2.indexOf(estados1[i])
       var aux=estados2[indice]
-      while(estados2.includes(aux)&& estados1.includes(aux) )
+      while(estados2.includes(aux) || estados1.includes(aux) )
       {
           if(aux[0].charCodeAt()==57 || aux[0].charCodeAt()==90 ||  aux[0].charCodeAt()==122){
 
@@ -1175,6 +1150,41 @@ function cambiarcaracter(estados1,estados2)
   }
  return estados2
 }
+
+//               nuevas funciones
+function ids(estados,conjunto)
+{
+	var ids=[]
+  for(let i=0;i<conjunto.length;i++)
+  {
+  	if(conjunto.includes(estados[i]))
+  		ids.push(conjunto.indexOf(estados[i]))
+  }
+  return ids
+}
+function e_finales(ids,conjunto)
+{
+	var e_finales=[]
+	for(let i=0;i<ids.length;i++)
+  	e_finales.push(conjunto[ids[i]])
+  return e_finales
+}
+function ids_gama(gama,conjunto)
+{
+	var gamaN=[]
+  for(let i=0;i<gama.length;i++)
+  if(conjunto.includes(gama[i][0])&&conjunto.includes(gama[i][2]))
+  	gamaN.push(añadirtransicion(conjunto.indexOf(gama[i][0]),gama[i][1],conjunto.indexOf(gama[i][2])))
+  return gamaN
+}
+function gama(ids,conjunto)
+{
+	var gama_r=[]
+  for(let i=0;i<ids.length;i++)
+  	gama_r.push(añadirtransicion(conjunto[ids[i][0]],ids[i][1],conjunto[ids[i][2]]))
+  return gama_r
+}
+//               nuevas funciones/>
 
 function cambiarcaractergama(g1,g2)
 {
@@ -1202,7 +1212,7 @@ function compararletra(palabra1,palabra2)
   	if(palabra1==palabra2)
     {
     	if(palabra2[0].charCodeAt()==57 || palabra2[0].charCodeAt()==90 || palabra2[0].charCodeAt()==122){
-      	//palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()-1))
+      	
         if(palabra2[0].charCodeAt()==57){
           palabra2=palabra2.replace(palabra2[0],String.fromCharCode(palabra2[0].charCodeAt()+8))
         }
@@ -1334,21 +1344,6 @@ function Datos_dupli(arreglo)
   return arreglo
 }
 
-function gama_dupli(arreglo)
-{
-  for(let index=0;index<arreglo.length;index++)
-	  for(let jdex=0;jdex<arreglo.length;jdex++)
-	  {
-      if(index!=jdex)
-      {
-        if(Comparar(arreglo[index],arreglo[jdex]))
-        {  
-          arreglo.splice(jdex,1)
-          jdex=0
-        }
-      }
-	  }
-}
 
 function Comparar(arr1,arr2)
 {
@@ -1518,7 +1513,6 @@ function afnd_to_afd(matriz,estado_i,estado_f,conjuntoq,alfabeto,gama)
       {
         var estadoU=""
         var estadoaux=nuevoQ[i].split(",")
-        /* console.log(estadoaux) */
         for(let k=0;k<estadoaux.length;k++)
         {
           if(Cdirige(matriz,estadoaux[k],alfabeto[j])!="-")
@@ -1527,7 +1521,6 @@ function afnd_to_afd(matriz,estado_i,estado_f,conjuntoq,alfabeto,gama)
               estadoU=estadoU+","+Cdirige(matriz,estadoaux[k],alfabeto[j])
             else
               estadoU+=Cdirige(matriz,estadoaux[k],alfabeto[j])
-            /* console.log(Cdirige(matriz,estadoaux[k],alfabeto[j])) */
           }
         }
         if(estadoU!="")
