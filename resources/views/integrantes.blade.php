@@ -5,8 +5,9 @@
 </head>
 <body>
 <h1>Integrantes del trabajo:</h1>
-    </br>
+    <br>
     <table class="table">
+      <caption></caption>
       <thead>
         <tr>
           <th scope="col">Integrante</th>

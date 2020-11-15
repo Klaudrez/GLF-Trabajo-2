@@ -1,6 +1,9 @@
 @extends('template')
 
 @section('seccion')
+<head>
+    <title>TRABAJO UNIDAD II: GRAFOS</title>
+  </head>
 <h1> TRABAJO UNIDAD II: GRAFOS </h1>
 <div>
     <p>Bienvenido al trabajo n°2 de Grafos y lenguajes formales, en esta página web se trabajará con un automata el cuál usted como usuario creará, una vez creado

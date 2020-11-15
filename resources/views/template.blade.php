@@ -8,7 +8,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-    <title>Trabajo n° 1 Grafos</title>
   </head>
   <body>
     
@@ -23,9 +22,9 @@
       @yield('seccion')
     </div>
     <footer>
-    <!-- <div class="fixed-bottom"><span class="d-block p-2 bg-dark text-white"><p class="text-center">Utem©</p></span></div> -->
+    
     </footer>
-    <!-- <div class="fixed-bottom"><span class="d-block p-2 bg-dark text-white"><p class="text-center">Utem©</p></span></div> -->
+    
     
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

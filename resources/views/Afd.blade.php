@@ -9,6 +9,7 @@
 </style>
 <div id="mostrarOcultar" style=" background-color: #d9ad26" class="hidden">
     <table class="table">
+      <caption></caption>
       <thead>
         <tr>
           <th scope="col">Para:</th>
@@ -54,10 +55,11 @@
 <input type="button" value="Mostrar Instrucciones" onclick="mostrar();">
 <input type="button" value="Ocultar Instrucciones" onclick="ocultar();">
 <head>
+  <title>Automatas | Trabajo Grafos</title>
 </head>
 <body>
 <!doctype html>
-<html>
+<html lang ="en">
 <head>
   <title>Network</title>
   <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js">
@@ -83,32 +85,33 @@
 </script>
 <div id="mynetwork"></div>
 
-<!-- <form method="post" action="#"> -->
-
 <!-- Ingreso de datos automata n°1 visual -->    
 </body>
 </html> 
-<br><h3>Datos Autómatas:</h3>
 <table border="0"> 
-<tr>
-<td width="25%">Conjunto de estados Q:</td>
-<td width="70%"><input type="text" name="conjuntoQ" placeholder="q1,q2,q3,...,qn" id="Q" > Formato: q1,q2,q3,...,qn </td>
-</tr>
-<tr>
-<td width="25%">Alfabeto:</td>
-<td width="70%"><input type="text" name="Alfabeto" placeholder="a,b,c,d,..." id="Alfabeto" > Formato: 1,2,3,...,n </td>
-</tr>
-<tr>
-<td width="25%">Estado inicial:</td>
-<td width="70%"><input type="text" name="Inicial" placeholder="q" id="Inicial" > Formato: q1 </td>
-</tr>
-<tr>
-<td width="25%">Función de transición:</td>
-<td width="70%"><input type="text" name="Gama" placeholder="q,a,q" id="Gama" > Formato: q1,a,q2;q1,b,q1;...qn,n,qm </td>
-<tr>
-<td width="25%">Estado(s) final(es):</td>
-<td width="70%"><input type="text" name="Finales" placeholder="q1,q2,q3,q4" id="Finales" > Formato: q1,q2,...,qn </td><br>
-</tr>
+  <caption></caption>
+  <tr>
+    <th scope="col"><h3>Datos Autómatas:</h3></th>
+  </tr>
+  <tr>
+    <td>Conjunto de estados Q:</td>
+    <td><input type="text" name="conjuntoQ" placeholder="q1,q2,q3,...,qn" id="Q" > Formato: q1,q2,q3,...,qn </td>
+  </tr>
+  <tr>
+    <td>Alfabeto:</td>
+    <td><input type="text" name="Alfabeto" placeholder="a,b,c,d,..." id="Alfabeto" > Formato: 1,2,3,...,n </td>
+  </tr>
+  <tr>
+    <td>Estado inicial:</td>
+    <td><input type="text" name="Inicial" placeholder="q" id="Inicial" > Formato: q1 </td>
+  </tr>
+  <tr>
+    <td >Función de transición:</td>
+    <td ><input type="text" name="Gama" placeholder="q,a,q" id="Gama" > Formato: q1,a,q2;q1,b,q1;...qn,n,qm </td>
+  <tr>
+    <td>Estado(s) final(es):</td>
+    <td><input type="text" name="Finales" placeholder="q1,q2,q3,q4" id="Finales" > Formato: q1,q2,...,qn </td><br>
+  </tr>
 </table>
 <button onclick="ValidarEntrada1()">Ingresar autómata 1</button>
 <button onclick="ValidarEntrada2()">Ingresar autómata 2</button>
@@ -116,8 +119,12 @@
 <button onclick="simplificar2()">Simplificar autómata 2 </button>
 <button onclick="reset()">Reset </button>
 
-<br><br><h3>Funciones para ambos autómatas</h3> 
-<table border="	0">  
+<br><br>
+<table border="	0"> 
+  <caption></caption>
+  <tr>
+    <th scope="col"><h3>Funciones para ambos autómatas</h3> </th> 
+  </tr>
 <td>	
 <button onclick="Complemento()">Complemento</button>
 <button onclick="Union()">Unión</button>
